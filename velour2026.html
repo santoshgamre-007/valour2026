@@ -76,7 +76,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th{text-align:left;font
 <body>
 <header class="hd">
   <div class="t"><span id="hd-title">Velour 2026</span><small>Cricket · Vakil Satellite Township</small></div>
-  <div class="sync" id="sync-status">Saved on this device</div>
+  <div class="sync" id="sync-status">Connecting…</div>
 </header>
 <nav class="tabs" id="tabs">
   <button data-tab="score" class="on">Score</button>
@@ -241,17 +241,25 @@ const toast = (m, ms = 2600) => { const t = $('toast'); t.textContent = m; t.hid
 /* ---------------- state ---------------- */
 const KEY = 'velour2026.cricket';
 let T = load();
+// Tournament bowling rules — fixed for Velour 2026
+const RULES = { maxOversPerBowler: 2, allowConsecutiveOvers: false };
+function applyRules(t) { t.maxOversPerBowler = RULES.maxOversPerBowler; t.allowConsecutiveOvers = RULES.allowConsecutiveOvers; return t; }
+applyRules(T);
 let UI = { tab: 'score', matchId: null, extra: null, extraRuns: 0, readOnly: location.hash === '#live' };
 function load() { try { const s = localStorage.getItem(KEY); if (s) return JSON.parse(s); } catch (_) {} const t = C.newTournament('Velour 2026'); for (const n of ['Team A', 'Team B', 'Team C', 'Team D']) t.teams.push(C.newTeam(n)); return t; }
 function save(opts = {}) { T.updated = Date.now(); localStorage.setItem(KEY, JSON.stringify(T)); if (!opts.silent) cloudSave(); render(); }
 const team = (id) => T.teams.find((x) => x.id === id) || { name: '?', players: [] };
 const match = () => T.matches.find((m) => m.id === UI.matchId) || null;
 
-/* ---------------- optional cloud sync (Firebase Firestore, free tier) ---------------- */
-let FB = { db: null, unsub: null, ready: false, applying: false };
-function cloudConfig() { try { return JSON.parse(localStorage.getItem(KEY + '.firebase') || 'null'); } catch { return null; } }
+/* ---------------- cloud sync (Firebase Firestore, free tier) ----------------
+   The web config below is public by design (it only identifies the project). Writes are protected
+   server-side by the Firestore rule, which requires a scorer PIN inside every write. */
+const DEFAULT_FIREBASE = { apiKey: 'AIzaSyDjLDhsyrpnZVBrSBU9obHA2KFaYkAyqvU', authDomain: 'velour2026-b8385.firebaseapp.com', projectId: 'velour2026-b8385', storageBucket: 'velour2026-b8385.firebasestorage.app', messagingSenderId: '553829591792', appId: '1:553829591792:web:9e6fed2a369c1eddaeb035', docId: 'velour2026' };
+let FB = { db: null, unsub: null, ready: false, applying: false, denied: false };
+function cloudConfig() { try { const c = JSON.parse(localStorage.getItem(KEY + '.firebase') || 'null'); return c && c.projectId ? c : DEFAULT_FIREBASE; } catch { return DEFAULT_FIREBASE; } }
+function scorerPin() { try { return localStorage.getItem(KEY + '.pin') || ''; } catch { return ''; } }
 async function cloudInit() {
-  const cfg = cloudConfig(); if (!cfg || !cfg.projectId) { $('sync-status').textContent = UI.readOnly ? 'Live view · this device only' : 'This device only — set up Cloud in Settings'; return; }
+  const cfg = cloudConfig();
   try {
     $('sync-status').textContent = 'Connecting to cloud…';
     for (const src of ['https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js', 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js']) await new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = src; sc.onload = res; sc.onerror = rej; document.head.appendChild(sc); });
@@ -260,14 +268,19 @@ async function cloudInit() {
     const ref = FB.db.collection('tournaments').doc(cfg.docId || 'velour2026');
     // First contact: the cloud copy is the source of truth. If none exists yet, seed it from this device.
     const snap = await ref.get();
-    if (snap.exists && snap.data().json) { const remote = JSON.parse(snap.data().json); if ((remote.updated || 0) >= (T.updated || 0) || !T.matches.length) { T = remote; localStorage.setItem(KEY, JSON.stringify(T)); render(); } }
-    else if (!UI.readOnly) await ref.set({ json: JSON.stringify(T), updated: T.updated || Date.now() });
-    FB.unsub = ref.onSnapshot((sn) => { const d = sn.data(); if (!d || !d.json) return; const remote = JSON.parse(d.json); if ((remote.updated || 0) > (T.updated || 0)) { FB.applying = true; T = remote; localStorage.setItem(KEY, JSON.stringify(T)); render(); FB.applying = false; } $('sync-status').textContent = `Cloud · ${cfg.docId || 'velour2026'} · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`; });
-    $('sync-status').textContent = `Cloud · ${cfg.docId || 'velour2026'} · connected`;
-  } catch (e) { $('sync-status').textContent = 'Cloud connection failed — check Settings'; console.error(e); }
+    if (snap.exists && snap.data().json) { const remote = JSON.parse(snap.data().json); if ((remote.updated || 0) >= (T.updated || 0) || !T.matches.length) { T = applyRules(remote); localStorage.setItem(KEY, JSON.stringify(T)); render(); } }
+    else if (!UI.readOnly && scorerPin()) await ref.set({ json: JSON.stringify(T), updated: T.updated || Date.now(), pin: scorerPin() }).catch(() => { FB.denied = true; });
+    FB.unsub = ref.onSnapshot((sn) => { const d = sn.data(); if (!d || !d.json) return; const remote = JSON.parse(d.json); if ((remote.updated || 0) > (T.updated || 0)) { FB.applying = true; T = applyRules(remote); localStorage.setItem(KEY, JSON.stringify(T)); render(); FB.applying = false; } $('sync-status').textContent = `Cloud · ${cfg.docId || 'velour2026'} · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`; });
+    $('sync-status').textContent = UI.readOnly ? 'Live · following the cloud' : (scorerPin() ? `Cloud · ${cfg.docId || 'velour2026'} · scorer` : 'Cloud · read-only — enter the scorer PIN in Cloud & settings to score');
+  } catch (e) { $('sync-status').textContent = 'Cloud connection failed — check internet'; console.error(e); }
 }
 let cloudTimer = null;
-function cloudSave() { if (!FB.ready || FB.applying) return; clearTimeout(cloudTimer); cloudTimer = setTimeout(() => { const cfg = cloudConfig(); FB.db.collection('tournaments').doc(cfg.docId || 'velour2026').set({ json: JSON.stringify(T), updated: T.updated }).then(() => { $('sync-status').textContent = 'Live · synced ' + new Date().toLocaleTimeString(); }).catch((e) => { $('sync-status').textContent = 'Sync error'; console.error(e); }); }, 600); }
+function cloudSave() {
+  if (!FB.ready || FB.applying || UI.readOnly) return;
+  if (!scorerPin()) { $('sync-status').textContent = 'Not saved to cloud — enter the scorer PIN in Cloud & settings'; return; }
+  clearTimeout(cloudTimer); cloudTimer = setTimeout(() => { const cfg = cloudConfig(); FB.db.collection('tournaments').doc(cfg.docId || 'velour2026').set({ json: JSON.stringify(T), updated: T.updated, pin: scorerPin() })
+    .then(() => { FB.denied = false; $('sync-status').textContent = `Cloud · scorer · saved ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`; })
+    .catch((e) => { FB.denied = /permission|denied/i.test(String(e && e.code || e)); $('sync-status').textContent = FB.denied ? 'Cloud rejected the save — wrong scorer PIN' : 'Sync error — check internet'; if (FB.denied) toast('Wrong scorer PIN — scores are not reaching the cloud'); console.error(e); }); }, 600); }
 
 /* ---------------- tabs ---------------- */
 document.querySelectorAll('nav.tabs button').forEach((b) => b.addEventListener('click', () => { UI.tab = b.dataset.tab; render(); }));
@@ -281,10 +294,10 @@ function render() {
 /* ---------------- Teams ---------------- */
 function renderTeams() {
   const el = $('tab-teams');
-  el.innerHTML = `<div class="card"><h2>Teams &amp; players</h2><p class="muted">Four teams, eleven players each. Type names straight into the boxes; they appear in the scoring dropdowns. Add a 12th or more for substitutes.</p></div>` +
+  el.innerHTML = `<div class="card"><h2>Teams &amp; players</h2><p class="muted">Type player names straight into the boxes; they appear in the scoring dropdowns. Any number of players per team — a side is all out when one batter is left.</p></div>` +
     `<div class="grid2">${T.teams.map((tm) => `<div class="card" data-team="${tm.id}"><div class="row"><input value="${esc(tm.name)}" data-rename="${tm.id}" aria-label="Team name" style="font-family:var(--num);font-size:22px;font-weight:700"><button class="btn ghost sm auto" data-addp="${tm.id}">Add player</button></div>
       ${tm.players.map((p, i) => `<div class="row" style="margin-top:6px"><span class="auto muted" style="width:22px;text-align:right">${i + 1}</span><input value="${esc(p)}" data-player="${tm.id}|${i}" placeholder="Player ${i + 1}"><button class="btn ghost sm auto" data-delp="${tm.id}|${i}" title="Remove">×</button></div>`).join('')}
-      ${tm.players.length < 11 ? `<div class="muted" style="margin-top:8px">${11 - tm.players.length} more to make eleven.</div>` : ''}</div>`).join('')}</div>` +
+      </div>`).join('')}</div>` +
     `<div class="row" style="margin-top:6px"><button class="btn ghost auto" id="add-team">Add a team</button></div>`;
   el.querySelectorAll('[data-rename]').forEach((i) => i.addEventListener('change', () => { team(i.dataset.rename).name = i.value.trim() || 'Team'; save(); }));
   el.querySelectorAll('[data-addp]').forEach((b) => b.addEventListener('click', () => { team(b.dataset.addp).players.push(''); save(); }));
@@ -341,9 +354,12 @@ function renderScore() {
     if (inningsOver) {
       html += `<div class="card"><h2>${chaseDone ? 'Target reached' : `Innings ${innIdx + 1} complete`} — ${s.runs}/${s.wkts} in ${s.overs} overs</h2>${innIdx === 0 ? `<p class="muted">${esc(s.bowlTeam.name)} need ${s.runs + 1} to win from ${m.overs} overs.</p><div class="actions"><button class="btn amber" id="start-2">Start second innings</button></div>` : `<div class="actions"><button class="btn amber" id="finish">Confirm result</button></div>`}</div>`;
     } else {
-      const sel = (id, list, val, ph) => `<select id="${id}"><option value="">${ph}</option>${list.map((p) => `<option value="${esc(p)}" ${p === val ? 'selected' : ''}>${esc(p)}</option>`).join('')}</select>`;
+      const sel = (id, list, val, ph, disabledFn) => `<select id="${id}"><option value="">${ph}</option>${list.map((p) => { const dis = disabledFn ? disabledFn(p) : ''; return `<option value="${esc(p)}" ${p === val ? 'selected' : ''} ${dis ? 'disabled' : ''}>${esc(p)}${dis ? ' — ' + dis : ''}</option>`; }).join('')}</select>`;
       const availableBats = batPlayers.filter((p) => !outNames.has(p));
-      html += `<div class="card"><div class="who"><div><label>On strike</label>${sel('sel-striker', availableBats, s.striker, 'Choose batter')}</div><div><label>Non-striker</label>${sel('sel-nonstriker', availableBats, s.nonStriker, 'Choose batter')}</div><div><label>Bowler</label>${sel('sel-bowler', bowlPlayers, s.legal % 6 === 0 && s.legal > 0 ? '' : s.lastBowler, 'Choose bowler')}</div></div>
+      const maxOv = Number(T.maxOversPerBowler) || 0; const newOver = s.legal % 6 === 0 && s.legal > 0;
+      const bowlerBlock = (p) => { const b = s.bowl.find((x) => x.name === p); const oversDone = b ? Math.floor(b.balls / 6) : 0; if (maxOv && oversDone >= maxOv && (newOver || !b || b.balls % 6 === 0)) return `${oversDone} ov bowled (max ${maxOv})`; if (T.allowConsecutiveOvers === false && newOver && p === s.lastBowler) return 'bowled the last over'; return ''; };
+      const keepBowler = !newOver ? s.lastBowler : (T.allowConsecutiveOvers !== false && !bowlerBlock(s.lastBowler) ? s.lastBowler : '');
+      html += `<div class="card"><div class="who"><div><label>On strike</label>${sel('sel-striker', availableBats, s.striker, 'Choose batter')}</div><div><label>Non-striker</label>${sel('sel-nonstriker', availableBats, s.nonStriker, 'Choose batter')}</div><div><label>Bowler ${maxOv ? `<span class="muted">(max ${maxOv} overs each)</span>` : ''}</label>${sel('sel-bowler', bowlPlayers, keepBowler, 'Choose bowler', bowlerBlock)}</div></div>
         <div class="extras"><button data-x="wd" class="${UI.extra === 'wd' ? 'on' : ''}">Wide</button><button data-x="nb" class="${UI.extra === 'nb' ? 'on' : ''}">No ball</button><button data-x="b" class="${UI.extra === 'b' ? 'on' : ''}">Bye</button><button data-x="lb" class="${UI.extra === 'lb' ? 'on' : ''}">Leg bye</button></div>
         <div class="muted" style="margin-top:6px">${UI.extra === 'wd' ? 'Wide: tap the runs taken beyond the penalty (usually 0).' : UI.extra === 'nb' ? 'No ball: tap the runs the batter hit off it (0–6). One penalty run is added automatically.' : UI.extra === 'b' || UI.extra === 'lb' ? 'Tap the runs taken as byes / leg byes.' : 'Tap the runs scored off the bat.'}</div>
         <div class="pad">${[0, 1, 2, 3, 4, 6].map((r) => `<button data-r="${r}" class="${r === 4 ? 'b4' : r === 6 ? 'b6' : ''}">${r}</button>`).join('')}</div>
@@ -368,7 +384,11 @@ function renderScore() {
     $('undo').addEventListener('click', () => { C.undoBall(inn); save(); toast('Last ball removed'); });
     $('end-inn').addEventListener('click', () => { if (confirm('End this innings now?')) { inn.closed = true; save(); } });
   }
-  function who() { const st = $('sel-striker').value, ns = $('sel-nonstriker').value, bw = $('sel-bowler').value; if (!st || !ns || !bw) { toast('Choose both batters and the bowler'); return null; } if (st === ns) { toast('Striker and non-striker must differ'); return null; } return { st, ns, bw }; }
+  function who() { const st = $('sel-striker').value, ns = $('sel-nonstriker').value, bw = $('sel-bowler').value; if (!st || !ns || !bw) { toast('Choose both batters and the bowler'); return null; } if (st === ns) { toast('Striker and non-striker must differ'); return null; }
+    const maxOv = Number(T.maxOversPerBowler) || 0; const b = s.bowl.find((x) => x.name === bw); const newOver = s.legal % 6 === 0 && s.legal > 0;
+    if (maxOv && b && Math.floor(b.balls / 6) >= maxOv && (newOver || b.balls % 6 === 0)) { toast(`${bw} has already bowled ${maxOv} overs`); return null; }
+    if (T.allowConsecutiveOvers === false && newOver && bw === s.lastBowler) { toast(`${bw} bowled the last over — choose another bowler`); return null; }
+    return { st, ns, bw }; }
   function recordBall(r) {
     const w = who(); if (!w) return;
     const b = { striker: w.st, nonStriker: w.ns, bowler: w.bw, runs: 0, extra: UI.extra, extraRuns: 0 };
@@ -460,28 +480,33 @@ function teamTrendHtml() {
 /* ---------------- Settings ---------------- */
 function renderSettings() {
   const el = $('tab-settings'); const cfg = cloudConfig() || {};
-  const cfgText = cfg.projectId ? JSON.stringify({ apiKey: cfg.apiKey, authDomain: cfg.authDomain, projectId: cfg.projectId, storageBucket: cfg.storageBucket, messagingSenderId: cfg.messagingSenderId, appId: cfg.appId }, null, 1) : '';
-  el.innerHTML = `<div class="card"><h2>Cloud storage</h2><p class="muted">Keep all scores in the cloud so every scorer and spectator sees the same data, and nothing is lost if a phone dies. Uses Google Firebase's free plan (no card needed). One-time setup, about ten minutes:</p>
-    <ol style="padding-left:20px;line-height:1.6"><li>Go to <b>console.firebase.google.com</b> → <b>Add project</b> (any name, e.g. <i>velour2026</i>; Analytics can be off).</li><li>In the project: <b>Build → Firestore Database → Create database</b> → start in <b>test mode</b> → Enable.</li><li><b>Project settings</b> (gear icon) → <b>Your apps</b> → <b>Web</b> (the <code>&lt;/&gt;</code> icon) → register the app → copy the <code>firebaseConfig = { … }</code> block.</li><li>Paste it below, choose a tournament code, press <b>Connect</b>. Do the same paste on each scorer's phone (or just share this page's address with <code>#live</code> for spectators).</li></ol>
-    <label>Tournament code <span class="muted">(all devices using the same code share one tournament)</span></label><input id="fb-doc" value="${esc(cfg.docId || 'velour2026')}">
-    <label>Firebase web config</label><textarea id="fb-cfg" rows="6" placeholder='const firebaseConfig = { apiKey: "...", authDomain: "...", projectId: "...", appId: "..." };'>${esc(cfgText)}</textarea>
-    <div class="actions"><button class="btn amber" id="fb-save">${cfg.projectId ? 'Reconnect' : 'Connect'}</button>${cfg.projectId ? '<button class="btn ghost" id="fb-clear">Disconnect (keep a local copy)</button>' : ''}</div>
-    <p class="muted" style="margin-top:8px">Status: <b>${esc($('sync-status').textContent)}</b>. After the fest, in Firestore → Rules, change <code>allow read, write: if true;</code> to <code>allow read: if true; allow write: if false;</code> to freeze the results.</p></div>
-  <div class="card"><h2>Tournament</h2><label>Name</label><input id="t-name" value="${esc(T.name)}"><label>Default overs per innings</label><input id="t-overs" type="number" min="1" max="50" value="${T.overs}"><div class="actions"><button class="btn" id="t-save">Save</button></div></div>
+  const cfgText = cfg.projectId && cfg.projectId !== DEFAULT_FIREBASE.projectId ? JSON.stringify({ apiKey: cfg.apiKey, authDomain: cfg.authDomain, projectId: cfg.projectId, storageBucket: cfg.storageBucket, messagingSenderId: cfg.messagingSenderId, appId: cfg.appId }, null, 1) : '';
+  el.innerHTML = `<div class="card"><h2>Scorer access</h2><p class="muted">Everyone can watch the live scores. To <b>change</b> scores, this phone needs the scorer PIN (ask the organiser). The cloud checks the PIN on every save, so without it nothing can be changed.</p>
+    <label>Scorer PIN</label><input id="pin" type="password" inputmode="numeric" value="${esc(scorerPin())}" placeholder="4–6 digits"><div class="actions"><button class="btn amber" id="pin-save">Save PIN</button>${scorerPin() ? '<button class="btn ghost" id="pin-clear">Remove PIN (watch only)</button>' : ''}</div>
+    <p class="muted" style="margin-top:8px">Status: <b>${esc($('sync-status').textContent)}</b></p></div>
+  <details class="card"><summary style="cursor:pointer;font-family:var(--num);font-size:19px;font-weight:700;color:var(--pitch)">Advanced — use a different cloud project</summary><p class="muted">Only needed if the organiser moves the tournament to another Firebase project. Paste its web config and tournament code.</p>
+    <label>Tournament code</label><input id="fb-doc" value="${esc(cfg.docId || 'velour2026')}"><label>Firebase web config</label><textarea id="fb-cfg" rows="5" placeholder='const firebaseConfig = { … };'>${esc(cfgText)}</textarea>
+    <div class="actions"><button class="btn" id="fb-save">Use this project</button><button class="btn ghost" id="fb-clear">Back to the default project</button></div></details>
+  <div class="card"><h2>Tournament rules</h2><label>Name</label><input id="t-name" value="${esc(T.name)}"><label>Overs per innings</label><input id="t-overs" type="number" min="1" max="50" value="${T.overs}"><div class="muted" style="margin-top:12px;padding:10px 12px;background:var(--chalk);border-radius:10px"><b style="color:var(--ink)">Bowling rules (fixed)</b><br>• A bowler may bowl at most <b>2 overs</b> in a match.<br>• The same bowler cannot bowl two overs in a row.<br><span>The app enforces both automatically in the bowler list.</span></div><div class="actions"><button class="btn" id="t-save">Save</button></div></div>
   <div class="card"><h2>Live view for spectators</h2><p class="muted">Share this address; it shows scores but cannot change them:</p><input readonly value="${esc(location.origin + location.pathname + '#live')}" onclick="this.select()"></div>
   <div class="card"><h2>Backup</h2><p class="muted">Download everything as a file (teams, matches, every ball) and restore it later or on another device.</p><div class="actions"><button class="btn ghost" id="exp">Download backup</button><label class="btn ghost" style="text-align:center">Restore from file<input id="imp" type="file" accept=".json" hidden></label><button class="btn red" id="reset">Reset tournament</button></div></div>`;
   $('fb-save').addEventListener('click', () => {
-    // Accept the raw "const firebaseConfig = {...};" paste or bare JSON, with or without quotes on keys
-    let raw = $('fb-cfg').value.trim(); const i = raw.indexOf('{'); const j = raw.lastIndexOf('}'); if (i < 0 || j < 0) { toast('Paste the firebaseConfig block from the Firebase console'); return; }
-    raw = raw.slice(i, j + 1).replace(/([{,]\s*)([A-Za-z_][\w]*)\s*:/g, '$1"$2":').replace(/'/g, '"').replace(/,\s*}/g, '}');
+    // Accept anything Firebase shows: the full snippet with import lines, "const firebaseConfig = {...};",
+    // or bare JSON, with or without quotes on keys. Find the object that contains apiKey, not the first brace.
+    let raw = $('fb-cfg').value.replace(/\/\/[^\n]*/g, '').replace(/^\s*import .*$/gm, '').trim();
+    const k = raw.search(/apiKey/); if (k < 0) { toast('Paste the firebaseConfig block from the Firebase console (it contains apiKey)'); return; }
+    const i = raw.lastIndexOf('{', k); const j = raw.indexOf('}', k); if (i < 0 || j < 0) { toast('Paste the whole { … } block'); return; }
+    raw = raw.slice(i, j + 1).replace(/([{,]\s*)([A-Za-z_$][\w$]*)\s*:/g, '$1"$2":').replace(/'/g, '"').replace(/,\s*}/g, '}');
     try { const jcfg = JSON.parse(raw); if (!jcfg.projectId || !jcfg.apiKey) throw new Error('missing'); jcfg.docId = ($('fb-doc').value.trim() || 'velour2026').replace(/[^\w-]/g, ''); localStorage.setItem(KEY + '.firebase', JSON.stringify(jcfg)); toast('Connecting…'); location.reload(); }
     catch { toast('That config is incomplete — it needs apiKey and projectId'); }
   });
   const fc = $('fb-clear'); if (fc) fc.addEventListener('click', () => { localStorage.removeItem(KEY + '.firebase'); location.reload(); });
-  $('t-save').addEventListener('click', () => { T.name = $('t-name').value.trim() || 'Velour 2026'; T.overs = +$('t-overs').value || 20; save(); toast('Saved'); });
+  $('pin-save').addEventListener('click', () => { const v = $('pin').value.trim(); if (!/^\d{4,6}$/.test(v)) { toast('The PIN is 4 to 6 digits'); return; } localStorage.setItem(KEY + '.pin', v); toast('PIN saved — scores from this phone go to the cloud'); location.reload(); });
+  const pc = $('pin-clear'); if (pc) pc.addEventListener('click', () => { localStorage.removeItem(KEY + '.pin'); location.reload(); });
+  $('t-save').addEventListener('click', () => { T.name = $('t-name').value.trim() || 'Velour 2026'; T.overs = +$('t-overs').value || 20; applyRules(T); save(); toast('Saved'); });
   $('exp').addEventListener('click', () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(T, null, 2)], { type: 'application/json' })); a.download = `${(T.name || 'tournament').replace(/\W+/g, '_')}_backup.json`; a.click(); });
-  $('imp').addEventListener('change', async (e) => { const f = e.target.files[0]; if (!f) return; try { const j = JSON.parse(await f.text()); if (!j.teams || !j.matches) throw new Error('not a backup'); T = j; save(); toast('Restored'); } catch { toast('Could not read that backup file'); } });
-  $('reset').addEventListener('click', () => { if (confirm('Delete all teams, matches and scoring on this device?')) { localStorage.removeItem(KEY); T = load(); save(); } });
+  $('imp').addEventListener('change', async (e) => { const f = e.target.files[0]; if (!f) return; try { const j = JSON.parse(await f.text()); if (!j.teams || !j.matches) throw new Error('not a backup'); T = applyRules(j); save(); toast('Restored'); } catch { toast('Could not read that backup file'); } });
+  $('reset').addEventListener('click', () => { if (confirm('Delete all teams, matches and scoring on this device?')) { localStorage.removeItem(KEY); T = applyRules(load()); save(); } });
 }
 
 /* ---------------- modal ---------------- */

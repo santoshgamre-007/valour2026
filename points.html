@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F3D2E">
+<title>Valour 2026 — Overall points</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pitch:#0F3D2E; --pitch-2:#145239; --bg:#EDF1EE; --paper:#FFFFFF; --ink:#13201B; --mute:#5B6963; --line:#D5DCD7; --soft:#F4F7F5;
+  --amber:#FFB300; --amber-ink:#5A3E00; --red:#C62839; --green:#1E8E5A;
+  --num:'Barlow Condensed','Arial Narrow',Impact,sans-serif; --body:'Barlow',system-ui,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--body);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+h1,h2,h3{font-family:var(--num);margin:0;letter-spacing:.2px}
+h2{font-size:22px;color:var(--pitch)} h3{font-size:17px;color:var(--pitch)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+input,select,textarea{width:100%;padding:9px 11px;border:1.5px solid var(--line);border-radius:8px;background:#fff}
+input[type=checkbox]{width:18px;height:18px;padding:0;accent-color:var(--pitch)}
+input[type=color]{padding:2px;height:40px;width:52px}
+:focus-visible{outline:3px solid rgba(255,179,0,.75);outline-offset:2px}
+label{display:block;font-weight:600;font-size:13px;color:var(--mute);margin:12px 0 4px}
+.muted{color:var(--mute);font-size:13px}
+.btn{border:0;border-radius:10px;padding:10px 16px;font:700 17px var(--num);letter-spacing:.3px;background:var(--pitch);color:#fff}
+.btn.amber{background:var(--amber);color:var(--amber-ink)}
+.btn.ghost{background:#fff;color:var(--pitch);box-shadow:inset 0 0 0 1.5px var(--pitch)}
+.btn.red{background:var(--red)}
+.btn.sm{padding:6px 11px;font-size:15px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* header + tabs */
+.hd{background:var(--pitch);color:#fff;padding:16px 18px 14px}
+.hd-in{max-width:980px;margin:0 auto;display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.hd .t{font:800 32px/1 var(--num);letter-spacing:.4px}
+.hd .s{font-size:13px;opacity:.85;margin-top:5px}
+.hd .sync{font-size:12px;opacity:.8;text-align:right;max-width:260px}
+nav{background:var(--pitch-2);position:sticky;top:0;z-index:20;box-shadow:0 1px 0 rgba(0,0,0,.25)}
+nav .in{max-width:980px;margin:0 auto;display:flex;gap:4px;padding:6px 10px;overflow:auto}
+nav button{flex:0 0 auto;border:0;background:transparent;color:#fff;border-radius:8px;padding:8px 14px;font:700 18px var(--num);opacity:.75}
+nav button.on{background:var(--amber);color:var(--amber-ink);opacity:1}
+main{max-width:980px;margin:0 auto;padding:16px 14px 70px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.row>*{flex:1 1 150px}.row>.auto{flex:0 0 auto}
+
+/* the race: lanes */
+.hero h1{font:800 clamp(34px,7vw,50px)/1 var(--num);color:var(--pitch)}
+.hero .sub{margin:8px 0 0;color:var(--mute)}
+.prog{height:6px;border-radius:3px;background:var(--line);margin:12px 0 6px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--pitch);transition:width .6s ease}
+.lanes{margin-top:14px}
+.lane{display:grid;grid-template-columns:34px 96px 1fr;align-items:center;gap:8px;padding:8px 0;border-top:1px dashed #C6D0CA}
+.lane:first-child{border-top:0}
+.lane .rk{font:800 30px/1 var(--num);color:var(--pitch);text-align:center}
+.lane .nm{font:700 18px/1.05 var(--num);overflow-wrap:anywhere}
+.track{position:relative;height:32px;border-radius:16px;background:#E3EAE5}
+.fill{position:absolute;inset:0 auto 0 0;width:var(--w);min-width:32px;border-radius:16px;background:var(--c);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.val{position:absolute;top:50%;transform:translateY(-50%);left:calc(max(var(--w),32px) + 8px);font:800 20px var(--num);white-space:nowrap}
+.champ{display:flex;gap:28px;flex-wrap:wrap;background:var(--amber);color:var(--amber-ink);border-radius:12px;padding:14px 18px;margin-bottom:16px}
+.champ .l{font-size:13px;font-weight:600}
+.champ .b1{font:800 38px/1 var(--num)}.champ .b2{font:800 28px/1.1 var(--num);margin-top:6px}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12.5px;color:var(--mute);font-weight:600;padding:6px 8px;border-bottom:2px solid var(--line)}
+td{padding:8px;border-bottom:1px solid #E8EDEA;vertical-align:middle}
+.n{text-align:right;font-variant-numeric:tabular-nums}
+.scroll{overflow-x:auto}
+.std td.rk{font:800 24px var(--num);color:var(--pitch);width:34px}
+.std tr.r1 td:first-child{box-shadow:inset 5px 0 0 var(--amber)}
+.std tr.r2 td:first-child{box-shadow:inset 5px 0 0 #9AA7A1}
+.std .pts{font:800 22px var(--num)}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--c);margin-right:7px;vertical-align:-1px}
+.tag{display:inline-block;margin-left:8px;padding:1px 9px;border-radius:99px;font-size:12px;font-weight:700;background:var(--amber);color:var(--amber-ink)}
+.tag.sil{background:#DDE3E0;color:#33403A}
+.mx td.c{text-align:center;font-variant-numeric:tabular-nums}
+.mx td.lead{font-weight:800;box-shadow:inset 0 -3px 0 var(--amber)}
+.mx tfoot td{font-weight:800;border-top:2px solid var(--line)}
+.chart svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mute);margin-top:4px}
+
+/* events */
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px}
+.filters>div{flex:1 1 160px}.filters label{margin-top:0}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:6px 13px;font-weight:600;font-size:14px}
+.seg button.on{background:var(--pitch);border-color:var(--pitch);color:#fff}
+.evs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.ev{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-left:6px solid var(--line);border-radius:12px;padding:12px 12px 12px 14px}
+.ev.done{border-left-color:var(--green)}.ev.prog{border-left-color:var(--amber)}
+.ev .h{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.ev .sp{font:800 24px/1.05 var(--num);color:var(--pitch)}
+.ev .cg{color:var(--mute);font-size:13px;margin-top:2px}
+.ev .g{display:grid;gap:6px;margin-top:10px}
+.cell{border-top:4px solid var(--c);background:var(--soft);border-radius:6px;padding:5px 7px;min-width:0}
+.cell .tn{display:block;font-size:11.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cell b{font:800 22px/1.1 var(--num)}
+.cell i{font-style:normal;font-size:11.5px;color:var(--mute);margin-left:5px}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap;background:#E3E8E5;color:#3A4741}
+.pill.done{background:var(--green);color:#fff}.pill.prog{background:var(--amber);color:var(--amber-ink)}
+.pill.no{background:#fff;box-shadow:inset 0 0 0 1.5px var(--line);color:var(--mute)}
+
+/* modal + toast */
+.ov{position:fixed;inset:0;background:rgba(10,25,19,.55);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:#fff;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px))}
+@media(min-width:640px){.ov{align-items:center}.sheet{border-radius:18px}}
+.sheet h2{margin-bottom:2px}
+.trow{display:grid;grid-template-columns:1fr 96px 96px;gap:8px;align-items:center;margin-top:8px;padding-left:10px;border-left:5px solid var(--c)}
+.trow .tn{font:700 18px var(--num)}
+.chk{display:flex;gap:9px;align-items:center;font-weight:600;color:var(--ink);font-size:14px;margin:12px 0 0}
+.cs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cs label{margin:6px 0 0}
+details{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+summary{cursor:pointer;font-weight:600;color:var(--mute)}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.acts .btn{flex:1 1 auto}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;z-index:60;max-width:90vw;font-weight:600}
+.warn{background:#FFF4D6;border:1px solid #F0D58A;border-radius:10px;padding:10px 12px;margin-top:10px;font-size:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chips span{background:var(--soft);border:1px solid var(--line);border-radius:99px;padding:2px 10px;font-size:13px}
+@media(max-width:520px){.filters>div{flex:1 1 100%}.lane{grid-template-columns:28px 78px 1fr}.hd .t{font-size:28px}.trow{grid-template-columns:1fr 84px 84px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="hd"><div class="hd-in"><div><div class="t" id="hd-title">Valour 2026</div><div class="s">Overall points · Vakil Satellite Township · v1.0.1</div></div><div class="sync" id="sync">Starting…</div></div></header>
+<nav><div class="in"><button data-tab="board" class="on">Leaderboard</button><button data-tab="events">Events</button><button data-tab="settings">Settings</button></div></nav>
+<main>
+  <section id="tab-board"></section>
+  <section id="tab-events" hidden></section>
+  <section id="tab-settings" hidden></section>
+</main>
+<div id="ov" class="ov" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+/* ================= data ================= */
+const KEY = 'valour2026.points';
+const DOC = 'valour2026-points';
+const FIREBASE = { apiKey: 'AIzaSyDjLDhsyrpnZVBrSBU9obHA2KFaYkAyqvU', authDomain: 'velour2026-b8385.firebaseapp.com', projectId: 'velour2026-b8385', storageBucket: 'velour2026-b8385.firebasestorage.app', messagingSenderId: '553829591792', appId: '1:553829591792:web:9e6fed2a369c1eddaeb035' };
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const uid = () => Math.random().toString(36).slice(2, 9);
+const ORD = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
+const COLORS = ['#2F6DB5', '#D9472B', '#7A4FB5', '#0E9AA7', '#B8860B', '#C2185B', '#455A64', '#6D4C41'];
+const fmt = (n) => (n == null ? '–' : String(Math.round(n * 10) / 10));
+
+// The schedule exactly as in "Valour 26 - Schedule.xlsx": [stage, category, sport]
+const SCHEDULE = [
+  ['League + Finals', 'Sr Citizen', 'Rummy'], ['Leagues', 'Above 50', 'Carroms'], ['Friendly Matches (18+)', 'Above 18', 'Basketball'],
+  ['League + Finals', 'Below 13', 'Athletics'], ['Leagues', 'Below 18', 'Throwball'], ['League + Finals', 'Above 50', 'Carroms'],
+  ['Leagues', "Women's", 'Cricket'], ['Leagues', 'Junior', 'Cricket'], ['Leagues', 'Below 18', 'Basketball'], ['Leagues', "Men's", 'Cricket'],
+  ['Leagues', "Women's", 'Throwball'], ['Finals', "Men's", 'Cricket'], ['Finals', 'Junior', 'Cricket'], ['Leagues', 'All Ages', 'TT'],
+  ['Leagues', "Men's", 'Volleyball'], ['League + Finals', 'All Ages', 'TT'], ['Finals', 'Below 18', 'Basketball'], ['League + Finals', 'All Ages', 'Badminton'],
+  ['SF + Finals', 'All Ages', 'Badminton'], ['League + Finals', 'Below 18', 'Football'], ['Finals', "Women's", 'Throwball'], ['Finals', 'Below 18', 'Throwball'],
+  ['Finals', "Men's", 'Volleyball'], ['Finals', "Women's", 'Cricket'],
+];
+function defaults() {
+  return {
+    name: 'Valour 2026',
+    teams: [1, 2, 3, 4].map((i) => ({ id: 't' + i, name: 'Team ' + i, color: COLORS[i - 1] })),
+    scheme: [5, 3, 2, 1, 0, 0, 0, 0], // placeholder points for 1st, 2nd, 3rd, 4th … (editable in Settings)
+    events: SCHEDULE.map((r, i) => ({ id: 'e' + (i + 1), stage: r[0], category: r[1], sport: r[2], counts: true, done: false, pts: {}, place: {}, scheme: null, note: '' })),
+    final: null, updated: Date.now(),
+  };
+}
+function norm(t) {
+  t.teams = (t.teams || []).map((x, i) => ({ id: x.id || 't' + uid(), name: x.name || 'Team ' + (i + 1), color: x.color || COLORS[i % COLORS.length] }));
+  t.scheme = Array.from({ length: 8 }, (_, i) => (t.scheme && t.scheme[i] != null ? +t.scheme[i] : 0));
+  t.events = (t.events || []).map((e) => ({ id: e.id || 'e' + uid(), stage: e.stage || '', category: e.category || '', sport: e.sport || '', counts: e.counts !== false, done: !!e.done, pts: e.pts || {}, place: e.place || {}, scheme: Array.isArray(e.scheme) ? e.scheme : null, note: e.note || '' }));
+  t.final = t.final && t.final.winner ? t.final : null; t.updated = t.updated || Date.now(); t.name = t.name || 'Valour 2026';
+  return t;
+}
+function load() { try { const s = localStorage.getItem(KEY); if (s) return norm(JSON.parse(s)); } catch (_) {} return norm(defaults()); }
+let T = load();
+const UI = { tab: 'board', sport: '', status: 'all' };
+
+/* ================= scoring maths ================= */
+const num = (v) => (v === '' || v == null || isNaN(+v) ? null : +v);
+const evPts = (ev, id) => num(ev.pts[id]);
+const evState = (ev) => (ev.done ? 'done' : T.teams.some((t) => evPts(ev, t.id) != null || ev.place[t.id]) ? 'prog' : 'todo');
+const STATE_LABEL = { todo: 'To score', prog: 'In progress', done: 'Scored' };
+const schemeFor = (ev, place) => { const s = ev && ev.scheme ? ev.scheme : T.scheme; return s[place - 1] == null ? 0 : s[place - 1]; };
+const canEdit = () => !!scorerPin();
+const team = (id) => T.teams.find((t) => t.id === id) || { name: '?', color: '#888' };
+
+// Ranking: total points, then most 1st places, then 2nd, then 3rd. A full tie is left for the organisers to settle.
+function calc() {
+  const rows = T.teams.map((t) => ({ id: t.id, name: t.name, color: t.color, pts: 0, g: 0, s: 0, b: 0 }));
+  const R = Object.fromEntries(rows.map((r) => [r.id, r]));
+  const seq = [];
+  T.events.forEach((ev) => {
+    if (!ev.counts || evState(ev) === 'todo') return;
+    seq.push(ev);
+    T.teams.forEach((t) => { const p = evPts(ev, t.id); if (p != null) R[t.id].pts += p; const pl = ev.place[t.id]; if (pl === 1) R[t.id].g++; else if (pl === 2) R[t.id].s++; else if (pl === 3) R[t.id].b++; });
+  });
+  const same = (a, b) => a.pts === b.pts && a.g === b.g && a.s === b.s && a.b === b.b;
+  const order = rows.slice().sort((a, b) => b.pts - a.pts || b.g - a.g || b.s - a.s || b.b - a.b || a.name.localeCompare(b.name));
+  order.forEach((r, i) => { const p = order[i - 1]; r.rank = p && same(p, r) ? p.rank : i + 1; r.tied = order.some((o) => o !== r && same(o, r)); r.countback = order.some((o) => o !== r && o.pts === r.pts && !same(o, r)); });
+  const counted = T.events.filter((e) => e.counts);
+  return { rows: order, seq, counted: counted.length, done: counted.filter((e) => e.done).length, left: counted.filter((e) => !e.done) };
+}
+
+/* ================= cloud (same Firebase project + scorer PIN as the cricket app) ================= */
+const FB = { db: null, ready: false, applying: false };
+function scorerPin() { try { return localStorage.getItem(KEY + '.pin') || localStorage.getItem('velour2026.cricket.pin') || ''; } catch (_) { return ''; } }
+function setSync(msg) { const el = $('sync'); if (el) el.textContent = msg; }
+async function cloudInit() {
+  try {
+    setSync('Connecting to cloud…');
+    for (const src of ['https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js', 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js'])
+      await new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = src; sc.onload = res; sc.onerror = rej; document.head.appendChild(sc); });
+    const app = window.firebase.apps.length ? window.firebase.app() : window.firebase.initializeApp(FIREBASE);
+    FB.db = window.firebase.firestore(app); FB.ready = true;
+    const ref = FB.db.collection('tournaments').doc(DOC);
+    const snap = await ref.get();
+    if (snap.exists && snap.data().json) { const remote = norm(JSON.parse(snap.data().json)); if ((remote.updated || 0) >= (T.updated || 0)) { T = remote; localStorage.setItem(KEY, JSON.stringify(T)); render(); } }
+    else if (canEdit()) await ref.set({ json: JSON.stringify(T), updated: T.updated, pin: scorerPin() }).catch(() => {});
+    ref.onSnapshot((sn) => { const d = sn.data(); if (!d || !d.json) return; const remote = norm(JSON.parse(d.json)); if ((remote.updated || 0) > (T.updated || 0)) { FB.applying = true; T = remote; localStorage.setItem(KEY, JSON.stringify(T)); if ($('ov').hidden) render(); FB.applying = false; } });
+    setSync(canEdit() ? 'Cloud · scorer' : 'Cloud · view only — enter the scorer PIN in Settings to edit');
+  } catch (e) { setSync('Cloud connection failed — check internet'); console.error(e); }
+}
+let cloudTimer = null;
+function cloudSave() {
+  if (!FB.ready || FB.applying) return;
+  if (!canEdit()) { setSync('Not saved to cloud — enter the scorer PIN in Settings'); return; }
+  clearTimeout(cloudTimer);
+  cloudTimer = setTimeout(() => FB.db.collection('tournaments').doc(DOC).set({ json: JSON.stringify(T), updated: T.updated, pin: scorerPin() })
+    .then(() => setSync('Cloud · scorer · saved ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })))
+    .catch((e) => { const denied = /permission|denied/i.test(String((e && e.code) || e)); setSync(denied ? 'Cloud rejected the save — wrong scorer PIN' : 'Sync error — check internet'); if (denied) toast('Wrong scorer PIN — changes are not reaching the cloud'); }), 600);
+}
+function save() { T.updated = Date.now(); try { localStorage.setItem(KEY, JSON.stringify(T)); } catch (_) {} cloudSave(); render(); }
+
+/* ================= ui helpers ================= */
+let toastTimer = null;
+function toast(m) { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 2800); }
+function openModal(html) { $('sheet').innerHTML = html; $('ov').hidden = false; $('sheet').scrollTop = 0; }
+function closeModal() { $('ov').hidden = true; $('sheet').innerHTML = ''; }
+$('ov').addEventListener('mousedown', (e) => { if (e.target === $('ov')) closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('ov').hidden) closeModal(); });
+function download(name, text, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }
+
+document.querySelectorAll('nav button').forEach((b) => b.addEventListener('click', () => { UI.tab = b.dataset.tab; render(); window.scrollTo(0, 0); }));
+function render() {
+  $('hd-title').textContent = T.name || 'Valour 2026';
+  document.querySelectorAll('nav button').forEach((b) => b.classList.toggle('on', b.dataset.tab === UI.tab));
+  for (const t of ['board', 'events', 'settings']) $('tab-' + t).hidden = t !== UI.tab;
+  ({ board: renderBoard, events: renderEvents, settings: renderSettings })[UI.tab]();
+}
+
+/* ================= leaderboard ================= */
+function raceChart(rows) {
+  const { seq } = calc();
+  if (seq.length < 2) return '<div class="muted" style="padding:10px 0">The race chart appears once two events have points.</div>';
+  const W = 620, H = 300, L = 38, R = 150, Tp = 14, B = 46;
+  const cum = T.teams.map((t) => { let s = 0; return [0].concat(seq.map((ev) => (s += evPts(ev, t.id) || 0))); });
+  const maxV = Math.max(1, ...cum.map((c) => c[c.length - 1])); const step = maxV <= 10 ? 2 : maxV <= 25 ? 5 : maxV <= 60 ? 10 : 20; const top = Math.ceil(maxV / step) * step;
+  const x = (i) => L + (W - L - R) * i / seq.length, y = (v) => Tp + (H - Tp - B) * (1 - v / top);
+  let g = ''; for (let v = 0; v <= top; v += step) g += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#E1E7E3"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="12" fill="#5B6963">${v}</text>`;
+  const every = Math.ceil(seq.length / 12); let xl = ''; seq.forEach((ev, i) => { if ((i + 1) % every === 0 || i === seq.length - 1) xl += `<text x="${x(i + 1)}" y="${H - 26}" text-anchor="middle" font-size="12" fill="#5B6963">${i + 1}</text>`; });
+  const ends = T.teams.map((t, k) => ({ t, k, yy: y(cum[k][cum[k].length - 1]) })).sort((a, b) => a.yy - b.yy); for (let i = 1; i < ends.length; i++) if (ends[i].yy - ends[i - 1].yy < 19) ends[i].yy = ends[i - 1].yy + 19;
+  const lines = T.teams.map((t, k) => `<polyline fill="none" stroke="${t.color}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="${cum[k].map((v, i) => x(i) + ',' + y(v)).join(' ')}"/>`).join('');
+  const dots = T.teams.map((t, k) => `<circle cx="${x(seq.length)}" cy="${y(cum[k][seq.length])}" r="4.5" fill="${t.color}"/>`).join('');
+  const labels = ends.map((e) => `<text x="${W - R + 10}" y="${e.yy + 4}" font-size="15" font-weight="700" fill="${e.t.color}">${esc(e.t.name.length > 14 ? e.t.name.slice(0, 13) + '…' : e.t.name)} ${fmt(cum[e.k][seq.length])}</text>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumulative points after each scored event: ${esc(rows.map((r) => r.name + ' ' + fmt(r.pts)).join(', '))}">${g}${xl}${lines}${dots}${labels}<text x="${L}" y="${H - 5}" font-size="12" fill="#5B6963">Events scored, in schedule order</text></svg>`;
+}
+function sportMatrix() {
+  const sports = [...new Set(T.events.map((e) => e.sport))].filter(Boolean);
+  const data = sports.map((sp) => { const sums = T.teams.map(() => 0); let any = false; T.events.forEach((ev) => { if (ev.sport !== sp || !ev.counts || evState(ev) === 'todo') return; any = true; T.teams.forEach((t, i) => { sums[i] += evPts(ev, t.id) || 0; }); }); return { sp, sums, any }; });
+  const tot = T.teams.map((_, i) => data.reduce((a, d) => a + d.sums[i], 0));
+  return `<div class="scroll"><table class="mx"><thead><tr><th>Sport</th>${T.teams.map((t) => `<th class="n" style="--c:${t.color}"><span class="dot"></span>${esc(t.name)}</th>`).join('')}</tr></thead><tbody>${data.map((d) => { const mx = Math.max(...d.sums); return `<tr><td><b>${esc(d.sp)}</b></td>${d.sums.map((v) => `<td class="n c ${d.any && v === mx && mx > 0 ? 'lead' : ''}" style="${d.any && mx > 0 && v > 0 ? 'background:rgba(15,61,46,' + (0.05 + 0.2 * v / mx).toFixed(2) + ')' : ''}">${d.any ? fmt(v) : '–'}</td>`).join('')}</tr>`; }).join('')}</tbody><tfoot><tr><td>Total</td>${tot.map((v) => `<td class="n c">${fmt(v)}</td>`).join('')}</tr></tfoot></table></div>`;
+}
+function renderBoard() {
+  const { rows, counted, done, left } = calc(); const el = $('tab-board');
+  const lead = rows[0], sec = rows[1] || rows[0]; const any = rows.some((r) => r.pts > 0);
+  let head = 'No points yet';
+  if (any) { const gap = lead.pts - sec.pts; head = lead.tied && gap === 0 ? 'Level at the top' : gap === 0 ? lead.name + ' ahead on countback' : lead.name + ' leads by ' + fmt(gap); }
+  const mx = Math.max(1, rows[0].pts) / 0.86;
+  const fin = T.final;
+  const champ = fin ? `<div class="champ"><div><div class="l">Valour 2026 champions</div><div class="b1">${esc(team(fin.winner).name)}</div></div><div><div class="l">Runner-up</div><div class="b2">${esc(team(fin.runner).name)}</div></div></div>` : '';
+  const sub = fin ? `Result declared ${new Date(fin.at).toLocaleDateString([], { day: 'numeric', month: 'long' })}.${fin.note ? ' ' + esc(fin.note) : ''}` : `${done} of ${counted} events scored. The winner and runner-up are declared after the last event.`;
+  const lanes = rows.map((r) => { const w = Math.max(0, r.pts) / mx * 100; return `<div class="lane" style="--c:${r.color};--w:${w.toFixed(1)}%"><div class="rk">${r.rank}</div><div class="nm">${esc(r.name)}</div><div class="track"><div class="fill"></div><div class="val">${fmt(r.pts)}</div></div></div>`; }).join('');
+  const tbl = `<div class="scroll"><table class="std"><thead><tr><th></th><th>Team</th><th class="n">Points</th><th class="n">Behind</th><th class="n">1st</th><th class="n">2nd</th><th class="n">3rd</th></tr></thead><tbody>${rows.map((r) => `<tr class="${r.rank === 1 ? 'r1' : r.rank === 2 ? 'r2' : ''}" style="--c:${r.color}"><td class="rk">${r.rank}</td><td><span class="dot"></span><b>${esc(r.name)}</b>${fin && fin.winner === r.id ? '<span class="tag">Champions</span>' : fin && fin.runner === r.id ? '<span class="tag sil">Runner-up</span>' : ''}${r.tied ? ' <span class="muted">level, organisers decide</span>' : r.countback ? ' <span class="muted">ahead on countback</span>' : ''}</td><td class="n pts">${fmt(r.pts)}</td><td class="n">${r.pts === rows[0].pts ? '–' : '−' + fmt(rows[0].pts - r.pts)}</td><td class="n">${r.g}</td><td class="n">${r.s}</td><td class="n">${r.b}</td></tr>`).join('')}</tbody></table></div><p class="muted" style="margin:8px 0 0">Ranked by total points, then most 1st places, 2nd places and 3rd places.</p>`;
+  let finish;
+  if (fin) finish = `<p>The result was declared on ${new Date(fin.at).toLocaleString([], { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}.</p>${canEdit() ? '<button class="btn ghost sm" data-act="undeclare">Undo the declaration</button>' : ''}`;
+  else finish = `<p>${left.length ? `<b>${left.length}</b> of ${counted} events are not marked as scored yet.` : 'Every event is scored.'}</p>${left.length ? `<div class="chips">${left.slice(0, 8).map((e) => `<span>${esc(e.sport)} · ${esc(e.category)} · ${esc(e.stage)}</span>`).join('')}${left.length > 8 ? `<span>+${left.length - 8} more</span>` : ''}</div>` : ''}${canEdit() ? '<div style="margin-top:12px"><button class="btn amber" data-act="declare">Declare winner &amp; runner-up</button></div>' : '<p class="muted">The scorers declare the result once the last event is done.</p>'}`;
+  el.innerHTML = `<div class="card hero">${champ}<h1>${esc(head)}</h1><p class="sub">${sub}</p><div class="prog"><i style="width:${counted ? (done / counted * 100).toFixed(1) : 0}%"></i></div><div class="lanes">${lanes}</div></div>
+  <div class="card"><h2>Standings</h2>${tbl}</div>
+  <div class="card chart"><h2>Points race</h2>${raceChart(rows)}</div>
+  <div class="card"><h2>Points by sport</h2>${sportMatrix()}</div>
+  <div class="card"><h2>${fin ? 'Result' : 'Finish the tournament'}</h2>${finish}</div>`;
+}
+function declareDialog() {
+  const { rows, left } = calc();
+  const opt = (sel) => T.teams.map((t) => `<option value="${t.id}" ${t.id === sel ? 'selected' : ''}>${esc(t.name)}</option>`).join('');
+  const tie = rows[0].tied || (rows[1] && rows[1].tied);
+  openModal(`<h2>Declare the result</h2><p class="muted">Winner and runner-up default to the current standings. Change them only if the organisers decide so.</p>
+    ${left.length ? `<div class="warn"><b>${left.length}</b> event${left.length === 1 ? ' is' : 's are'} not marked as scored yet. You can still declare now and undo it later.</div>` : ''}
+    ${tie ? '<div class="warn">Two or more teams are level on points and countback. Choose the winner and runner-up the organisers agreed (for example by head-to-head).</div>' : ''}
+    <label>Winner</label><select id="dw">${opt(rows[0].id)}</select><label>Runner-up</label><select id="dr">${opt(rows[1].id)}</select>
+    <label>Note (optional)</label><input id="dn" placeholder="e.g. Won on first places">
+    <div class="acts"><button class="btn amber" id="d-ok">Declare result</button><button class="btn ghost" data-act="close">Cancel</button></div>`);
+  $('d-ok').addEventListener('click', () => { const w = $('dw').value, r = $('dr').value; if (w === r) { toast('Winner and runner-up must be different teams'); return; } T.final = { winner: w, runner: r, at: Date.now(), note: $('dn').value.trim() }; closeModal(); save(); toast('Result declared'); });
+}
+
+/* ================= events ================= */
+function renderEvents() {
+  const el = $('tab-events'); const sports = [...new Set(T.events.map((e) => e.sport))].filter(Boolean);
+  const list = T.events.map((e, i) => ({ e, i })).filter(({ e }) => (!UI.sport || e.sport === UI.sport) && (UI.status === 'all' || (UI.status === 'todo' ? evState(e) !== 'done' : evState(e) === 'done')));
+  const N = T.teams.length;
+  el.innerHTML = `<div class="filters"><div><label for="f-sport">Sport</label><select id="f-sport"><option value="">All sports</option>${sports.map((s) => `<option ${UI.sport === s ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select></div>
+    <div><label>Show</label><div class="seg">${[['all', 'All'], ['todo', 'To score'], ['done', 'Scored']].map(([k, l]) => `<button data-f="${k}" class="${UI.status === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
+    ${canEdit() ? '<div style="flex:0 0 auto"><button class="btn amber" data-act="new-event">Add event</button></div>' : ''}</div>
+    <p class="muted" style="margin:0 0 10px">${canEdit() ? 'Tap an event to enter placings and points.' : 'Tap an event to see its result. Enter the scorer PIN in Settings to edit.'}</p>
+    <div class="evs">${list.length ? list.map(({ e, i }) => { const st = evState(e); return `<button class="ev ${st}" data-ev="${e.id}"><div class="h"><div><div class="sp">${esc(e.sport)}</div><div class="cg">${esc(e.category)} · ${esc(e.stage)} · #${i + 1}</div></div><div>${e.counts ? '' : '<span class="pill no">Not counted</span> '}<span class="pill ${st}">${STATE_LABEL[st]}</span></div></div><div class="g" style="grid-template-columns:repeat(${N},1fr)">${T.teams.map((t) => { const p = evPts(e, t.id), pl = e.place[t.id]; return `<div class="cell" style="--c:${t.color}"><span class="tn">${esc(t.name)}</span><b>${fmt(p)}</b>${pl ? `<i>${ORD[pl - 1]}</i>` : ''}</div>`; }).join('')}</div>${e.note ? `<div class="muted" style="margin-top:8px">${esc(e.note)}</div>` : ''}</button>`; }).join('') : '<div class="card muted">No events match this filter.</div>'}</div>`;
+  $('f-sport').addEventListener('change', (ev) => { UI.sport = ev.target.value; renderEvents(); });
+  el.querySelectorAll('[data-f]').forEach((b) => b.addEventListener('click', () => { UI.status = b.dataset.f; renderEvents(); }));
+}
+function openEditor(id) {
+  const isNew = !id; const edit = canEdit();
+  const ev = isNew ? { id: null, stage: 'Leagues', category: '', sport: '', counts: true, done: false, pts: {}, place: {}, scheme: null, note: '' } : T.events.find((e) => e.id === id);
+  if (!ev) return;
+  const N = T.teams.length;
+  const dis = edit ? '' : 'disabled';
+  const rowsHtml = T.teams.map((t) => `<div class="trow" style="--c:${t.color}"><div class="tn">${esc(t.name)}</div><select data-place="${t.id}" aria-label="${esc(t.name)} placing" ${dis}><option value="">Placing</option>${T.teams.map((_, i) => `<option value="${i + 1}" ${ev.place[t.id] === i + 1 ? 'selected' : ''}>${ORD[i]}</option>`).join('')}</select><input type="number" step="any" inputmode="decimal" data-pts="${t.id}" aria-label="${esc(t.name)} points" placeholder="Points" value="${evPts(ev, t.id) == null ? '' : evPts(ev, t.id)}" ${dis}></div>`).join('');
+  const cs = ev.scheme || T.scheme;
+  openModal(`<h2>${isNew ? 'New event' : esc(ev.sport)}</h2><div class="muted">${isNew ? 'Add an event to the schedule.' : esc(ev.category) + ' · ' + esc(ev.stage)}</div>
+    <div style="margin-top:10px">${rowsHtml}</div>
+    <p class="muted" style="margin:8px 0 0">Pick a placing to fill in the points automatically, or type the points yourself.</p>
+    <label class="chk"><input type="checkbox" id="ed-counts" ${ev.counts ? 'checked' : ''} ${dis}> Counts towards the overall total</label>
+    <label class="chk"><input type="checkbox" id="ed-cs" ${ev.scheme ? 'checked' : ''} ${dis}> Different points for this event</label>
+    <div class="cs" id="ed-csw" ${ev.scheme ? '' : 'hidden'}>${T.teams.map((_, i) => `<label>${ORD[i]}<input type="number" step="any" data-cs="${i}" value="${cs[i] == null ? 0 : cs[i]}" ${dis}></label>`).join('')}</div>
+    <label>Note</label><textarea id="ed-note" rows="2" placeholder="e.g. Final: Team 2 beat Team 4" ${dis}>${esc(ev.note)}</textarea>
+    ${edit ? `<details ${isNew ? 'open' : ''}><summary>Event details</summary><label>Sport</label><input id="ed-sport" list="sp-list" value="${esc(ev.sport)}"><datalist id="sp-list">${[...new Set(T.events.map((e) => e.sport))].map((s) => `<option value="${esc(s)}">`).join('')}</datalist><label>Category</label><input id="ed-cat" value="${esc(ev.category)}"><label>Stage</label><input id="ed-stage" value="${esc(ev.stage)}">${isNew ? '' : '<div style="margin-top:12px"><button class="btn red sm" data-act="del-event">Delete this event</button></div>'}</details>` : ''}
+    <div class="acts">${edit ? (isNew ? '<button class="btn amber" id="ed-add">Add event</button>' : '<button class="btn" id="ed-save">Save</button><button class="btn amber" id="ed-done">Save &amp; mark scored</button><button class="btn ghost" id="ed-clear">Clear</button>') : ''}<button class="btn ghost" data-act="close">Close</button></div>`);
+  if (!edit) return;
+  const sheet = $('sheet');
+  const curScheme = () => ($('ed-cs').checked ? [...sheet.querySelectorAll('[data-cs]')].map((i) => num(i.value) || 0) : T.scheme);
+  sheet.querySelectorAll('[data-place]').forEach((s) => s.addEventListener('change', () => { const inp = sheet.querySelector(`[data-pts="${s.dataset.place}"]`); if (s.value) { const sc = curScheme(); inp.value = sc[+s.value - 1] == null ? 0 : sc[+s.value - 1]; } else inp.value = ''; }));
+  $('ed-cs').addEventListener('change', () => { $('ed-csw').hidden = !$('ed-cs').checked; });
+  const gather = (markDone) => {
+    const target = isNew ? { id: 'e' + uid(), pts: {}, place: {}, done: false } : ev;
+    const sport = isNew ? $('ed-sport').value.trim() : ($('ed-sport') ? $('ed-sport').value.trim() : ev.sport);
+    if (!sport) { toast('Enter the sport'); return null; }
+    target.sport = sport; if ($('ed-cat')) target.category = $('ed-cat').value.trim(); if ($('ed-stage')) target.stage = $('ed-stage').value.trim();
+    T.teams.forEach((t) => { const p = sheet.querySelector(`[data-pts="${t.id}"]`).value.trim(), pl = sheet.querySelector(`[data-place="${t.id}"]`).value; target.pts[t.id] = p === '' ? null : +p; target.place[t.id] = pl ? +pl : null; });
+    target.counts = $('ed-counts').checked; target.scheme = $('ed-cs').checked ? curScheme() : null; target.note = $('ed-note').value.trim();
+    if (markDone != null) target.done = markDone; return target;
+  };
+  if ($('ed-add')) $('ed-add').addEventListener('click', () => { const t = gather(false); if (!t) return; T.events.push(t); closeModal(); save(); toast('Event added'); });
+  if ($('ed-save')) $('ed-save').addEventListener('click', () => { if (!gather(null)) return; closeModal(); save(); toast('Saved'); });
+  if ($('ed-done')) $('ed-done').addEventListener('click', () => { if (!gather(true)) return; closeModal(); save(); toast('Saved and marked as scored'); });
+  if ($('ed-clear')) $('ed-clear').addEventListener('click', () => { ev.pts = {}; ev.place = {}; ev.done = false; closeModal(); save(); toast('Scores cleared'); });
+  sheet.dataset.ev = isNew ? '' : ev.id;
+}
+
+/* ================= settings ================= */
+function renderSettings() {
+  const el = $('tab-settings'); const pin = scorerPin(); const N = T.teams.length;
+  el.innerHTML = `<div class="card"><h2>Scorer access</h2><p class="muted">Everyone can view the points. Only a phone with the scorer PIN can change them. If you already saved the PIN in the cricket scorer on this phone, it works here too.</p>
+    <div class="row"><div><label for="pin">Scorer PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="${pin ? 'PIN saved on this phone' : 'Enter the PIN'}"></div><div class="auto"><button class="btn" data-act="save-pin">Save PIN</button></div>${pin ? '<div class="auto"><button class="btn ghost" data-act="clear-pin">Forget PIN</button></div>' : ''}</div></div>
+  <div class="card"><h2>Teams</h2><p class="muted">Rename the teams and pick a colour for each. Between 2 and 8 teams.</p>
+    ${T.teams.map((t, i) => `<div class="row" style="margin-top:8px"><div style="flex:2 1 160px"><input data-tname="${t.id}" value="${esc(t.name)}" aria-label="Team ${i + 1} name" ${canEdit() ? '' : 'disabled'}></div><div class="auto"><input type="color" data-tcolor="${t.id}" value="${t.color}" aria-label="Team ${i + 1} colour" ${canEdit() ? '' : 'disabled'}></div>${canEdit() && N > 2 ? `<div class="auto"><button class="btn ghost sm" data-act="del-team" data-id="${t.id}">Remove</button></div>` : ''}</div>`).join('')}
+    ${canEdit() && N < 8 ? '<div style="margin-top:12px"><button class="btn ghost sm" data-act="add-team">Add a team</button></div>' : ''}</div>
+  <div class="card"><h2>Points for each placing</h2><p class="muted">These are starting values. Change them to your scheme. Choosing a placing in an event fills in these points, and you can still type any number. An event can also have its own points.</p>
+    <div class="cs" style="grid-template-columns:repeat(${Math.min(N, 4)},1fr)">${T.teams.map((_, i) => `<label>${ORD[i]} place<input type="number" step="any" data-scheme="${i}" value="${T.scheme[i]}" ${canEdit() ? '' : 'disabled'}></label>`).join('')}</div>
+    ${canEdit() ? '<div style="margin-top:12px"><button class="btn" data-act="save-scheme">Save points</button></div>' : ''}</div>
+  <div class="card"><h2>Tournament name</h2><div class="row"><div><input id="tname" value="${esc(T.name)}" ${canEdit() ? '' : 'disabled'}></div>${canEdit() ? '<div class="auto"><button class="btn" data-act="save-name">Save</button></div>' : ''}</div></div>
+  <div class="card"><h2>Export and backup</h2><div class="acts" style="margin-top:6px"><button class="btn ghost" data-act="csv">Download table (CSV)</button><button class="btn ghost" data-act="backup">Download backup</button>${canEdit() ? '<button class="btn ghost" data-act="restore">Restore from backup</button>' : ''}</div><input type="file" id="restore-file" accept=".json,application/json" hidden></div>
+  ${canEdit() ? `<div class="card"><h2>Start over</h2><p class="muted">Both options ask you to type RESET and download a backup first.</p><div class="acts"><button class="btn red" data-act="reset-scores">Clear all scores</button><button class="btn red" data-act="reset-all">Restore the original schedule</button></div></div>` : ''}
+  <div class="card"><h2>How it works</h2><p class="muted" style="margin:0">The events come from the Valour 26 schedule. Each event has points per team, entered from the Events tab. The Leaderboard adds them up, ranks the teams and, once the last event is done, a scorer declares the winner and runner-up. Ties on points are broken by most 1st places, then 2nd, then 3rd. If teams are still level, the organisers choose.</p></div>`;
+  el.querySelectorAll('[data-tname]').forEach((i) => i.addEventListener('change', () => { team(i.dataset.tname).name = i.value.trim() || 'Team'; save(); }));
+  el.querySelectorAll('[data-tcolor]').forEach((i) => i.addEventListener('change', () => { team(i.dataset.tcolor).color = i.value; save(); }));
+  const rf = $('restore-file'); if (rf) rf.addEventListener('change', () => { const f = rf.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { const d = norm(JSON.parse(r.result)); if (!d.events.length || !d.teams.length) throw new Error('empty'); if (!confirm('Replace everything with this backup (' + d.events.length + ' events, ' + d.teams.length + ' teams)?')) return; T = d; save(); toast('Backup restored'); } catch (_) { toast('That file is not a valid backup'); } }; r.readAsText(f); });
+}
+function csvText() {
+  const { rows } = calc(); const tot = Object.fromEntries(rows.map((r) => [r.id, r.pts]));
+  const out = [['#', 'Stage', 'Category', 'Sport', 'Counts', 'Status'].concat(T.teams.map((t) => t.name))];
+  T.events.forEach((e, i) => out.push([i + 1, e.stage, e.category, e.sport, e.counts ? 'Yes' : 'No', STATE_LABEL[evState(e)]].concat(T.teams.map((t) => (evPts(e, t.id) == null ? '' : evPts(e, t.id))))));
+  out.push(['', '', '', 'Total', '', ''].concat(T.teams.map((t) => tot[t.id])));
+  return '\ufeff' + out.map((r) => r.map((v) => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+}
+function typedReset(msg, fn) {
+  if (!confirm(msg + '\n\nA backup file is downloaded first. Continue?')) return;
+  const w = prompt('Type RESET to confirm.'); if (w === null || w.trim().toUpperCase() !== 'RESET') { toast('Nothing was changed'); return; }
+  download('valour2026_points_backup.json', JSON.stringify(T, null, 2), 'application/json'); fn(); save(); toast('Done');
+}
+
+/* ================= clicks ================= */
+document.addEventListener('click', (e) => {
+  const evb = e.target.closest('[data-ev]'); if (evb && evb.classList.contains('ev')) { openEditor(evb.dataset.ev); return; }
+  const a = e.target.closest('[data-act]'); if (!a) return; const act = a.dataset.act;
+  if (act === 'close') closeModal();
+  else if (act === 'new-event') openEditor(null);
+  else if (act === 'declare') declareDialog();
+  else if (act === 'undeclare') { if (confirm('Remove the declared result?')) { T.final = null; save(); } }
+  else if (act === 'del-event') { const id = $('sheet').dataset.ev; const ev = T.events.find((x) => x.id === id); if (ev && confirm('Delete ' + ev.sport + ' · ' + ev.category + ' · ' + ev.stage + '?')) { T.events = T.events.filter((x) => x.id !== id); closeModal(); save(); toast('Event deleted'); } }
+  else if (act === 'save-pin') { const v = $('pin').value.trim(); if (!v) { toast('Enter the PIN first'); return; } localStorage.setItem(KEY + '.pin', v); toast('PIN saved — reloading'); setTimeout(() => location.reload(), 700); }
+  else if (act === 'clear-pin') { localStorage.removeItem(KEY + '.pin'); toast('PIN removed from this app'); setTimeout(() => location.reload(), 700); }
+  else if (act === 'add-team') { if (T.teams.length >= 8) return; const n = T.teams.length + 1; T.teams.push({ id: 't' + uid(), name: 'Team ' + n, color: COLORS[(n - 1) % COLORS.length] }); save(); }
+  else if (act === 'del-team') { const id = a.dataset.id; if (!confirm('Remove ' + team(id).name + ' and its points?')) return; T.teams = T.teams.filter((t) => t.id !== id); T.events.forEach((ev) => { delete ev.pts[id]; delete ev.place[id]; }); if (T.final && (T.final.winner === id || T.final.runner === id)) T.final = null; save(); }
+  else if (act === 'save-scheme') { document.querySelectorAll('[data-scheme]').forEach((i) => { T.scheme[+i.dataset.scheme] = num(i.value) || 0; }); save(); toast('Points saved'); }
+  else if (act === 'save-name') { T.name = $('tname').value.trim() || 'Valour 2026'; save(); toast('Saved'); }
+  else if (act === 'csv') download('valour2026_points.csv', csvText(), 'text/csv');
+  else if (act === 'backup') download('valour2026_points_backup.json', JSON.stringify(T, null, 2), 'application/json');
+  else if (act === 'restore') $('restore-file').click();
+  else if (act === 'reset-scores') typedReset('This clears every placing and point, the declared result, and the scored flags. Events and teams stay.', () => { T.events.forEach((ev) => { ev.pts = {}; ev.place = {}; ev.done = false; }); T.final = null; });
+  else if (act === 'reset-all') typedReset('This replaces all events with the original Valour 26 schedule and clears all points.', () => { T.events = norm(defaults()).events; T.final = null; });
+});
+
+render();
+cloudInit();
+</script>
+</body>
+</html>

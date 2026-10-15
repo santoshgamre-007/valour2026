@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F3D2E">
+<title>Valour 2026 — Overall points</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pitch:#0F3D2E; --pitch-2:#145239; --bg:#EDF1EE; --paper:#FFFFFF; --ink:#13201B; --mute:#5B6963; --line:#D5DCD7; --soft:#F4F7F5;
+  --amber:#FFB300; --amber-ink:#5A3E00; --red:#C62839; --green:#1E8E5A;
+  --num:'Barlow Condensed','Arial Narrow',Impact,sans-serif; --body:'Barlow',system-ui,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--body);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+h1,h2,h3{font-family:var(--num);margin:0;letter-spacing:.2px}
+h2{font-size:22px;color:var(--pitch)} h3{font-size:17px;color:var(--pitch)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+input,select,textarea{width:100%;padding:9px 11px;border:1.5px solid var(--line);border-radius:8px;background:#fff}
+input[type=checkbox]{width:18px;height:18px;padding:0;accent-color:var(--pitch)}
+input[type=color]{padding:2px;height:40px;width:52px}
+:focus-visible{outline:3px solid rgba(255,179,0,.75);outline-offset:2px}
+label{display:block;font-weight:600;font-size:13px;color:var(--mute);margin:12px 0 4px}
+.muted{color:var(--mute);font-size:13px}
+.btn{border:0;border-radius:10px;padding:10px 16px;font:700 17px var(--num);letter-spacing:.3px;background:var(--pitch);color:#fff}
+.btn.amber{background:var(--amber);color:var(--amber-ink)}
+.btn.ghost{background:#fff;color:var(--pitch);box-shadow:inset 0 0 0 1.5px var(--pitch)}
+.btn.red{background:var(--red)}
+.btn.sm{padding:6px 11px;font-size:15px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* header + tabs */
+.hd{background:var(--pitch);color:#fff;padding:16px 18px 14px}
+.hd-in{max-width:980px;margin:0 auto;display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.hd .t{font:800 32px/1 var(--num);letter-spacing:.4px}
+.hd .s{font-size:13px;opacity:.85;margin-top:5px}
+.hd .sync{font-size:12px;opacity:.8;text-align:right;max-width:260px}
+nav{background:var(--pitch-2);position:sticky;top:0;z-index:20;box-shadow:0 1px 0 rgba(0,0,0,.25)}
+nav .in{max-width:980px;margin:0 auto;display:flex;gap:4px;padding:6px 10px;overflow:auto}
+nav button{flex:0 0 auto;border:0;background:transparent;color:#fff;border-radius:8px;padding:8px 14px;font:700 18px var(--num);opacity:.75}
+nav button.on{background:var(--amber);color:var(--amber-ink);opacity:1}
+main{max-width:980px;margin:0 auto;padding:16px 14px 70px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.row>*{flex:1 1 150px}.row>.auto{flex:0 0 auto}
+
+/* the race: lanes */
+.hero h1{font:800 clamp(34px,7vw,50px)/1 var(--num);color:var(--pitch)}
+.hero .sub{margin:8px 0 0;color:var(--mute)}
+.prog{height:6px;border-radius:3px;background:var(--line);margin:12px 0 6px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--pitch);transition:width .6s ease}
+.lanes{margin-top:14px}
+.lane{display:grid;grid-template-columns:34px 122px 1fr;align-items:center;gap:8px;padding:8px 0;border-top:1px dashed #C6D0CA}
+.lane:first-child{border-top:0}
+.lane .rk{font:800 30px/1 var(--num);color:var(--pitch);text-align:center}
+.lane .nm{font:700 18px/1.05 var(--num);overflow-wrap:normal;word-break:normal}
+.track{position:relative;height:32px;border-radius:16px;background:#E3EAE5}
+.fill{position:absolute;inset:0 auto 0 0;width:var(--w);min-width:32px;border-radius:16px;background:var(--c);box-shadow:inset 0 0 0 3px var(--c2,#13201B);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.val{position:absolute;top:50%;transform:translateY(-50%);left:calc(max(var(--w),32px) + 8px);font:800 20px var(--num);white-space:nowrap}
+.champ{display:flex;gap:28px;flex-wrap:wrap;background:var(--amber);color:var(--amber-ink);border-radius:12px;padding:14px 18px;margin-bottom:16px}
+.champ .l{font-size:13px;font-weight:600}
+.champ .b1{font:800 38px/1 var(--num)}.champ .b2{font:800 28px/1.1 var(--num);margin-top:6px}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12.5px;color:var(--mute);font-weight:600;padding:6px 8px;border-bottom:2px solid var(--line)}
+td{padding:8px;border-bottom:1px solid #E8EDEA;vertical-align:middle}
+.n{text-align:right;font-variant-numeric:tabular-nums}
+.scroll{overflow-x:auto}
+.std td.rk{font:800 24px var(--num);color:var(--pitch);width:34px}
+.std tr.r1 td:first-child{box-shadow:inset 5px 0 0 var(--amber)}
+.std tr.r2 td:first-child{box-shadow:inset 5px 0 0 #9AA7A1}
+.std .pts{font:800 22px var(--num)}
+.dot{display:inline-block;width:13px;height:13px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2.5px var(--c2,#13201B);margin-right:9px;vertical-align:-2px}
+.tag{display:inline-block;margin-left:8px;padding:1px 9px;border-radius:99px;font-size:12px;font-weight:700;background:var(--amber);color:var(--amber-ink)}
+.tag.sil{background:#DDE3E0;color:#33403A}
+.mx td.c{text-align:center;font-variant-numeric:tabular-nums}
+.mx td.lead{font-weight:800;box-shadow:inset 0 -3px 0 var(--amber)}
+.mx tfoot td{font-weight:800;border-top:2px solid var(--line)}
+.chart svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mute);margin-top:4px}
+
+/* events */
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px}
+.filters>div{flex:1 1 160px}.filters label{margin-top:0}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:6px 13px;font-weight:600;font-size:14px}
+.seg button.on{background:var(--pitch);border-color:var(--pitch);color:#fff}
+.evs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.ev{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-left:6px solid var(--line);border-radius:12px;padding:12px 12px 12px 14px}
+.ev.done{border-left-color:var(--green)}.ev.wip{border-left-color:var(--amber)}
+.ev .h{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.ev .sp{font:800 24px/1.05 var(--num);color:var(--pitch)}
+.ev .cg{color:var(--mute);font-size:13px;margin-top:2px}
+.ev .g{display:grid;gap:6px;margin-top:10px}
+.cell{position:relative;background:var(--soft);border-radius:6px;padding:11px 7px 5px;min-width:0}
+.cell::before{content:'';position:absolute;left:0;right:0;top:0;height:6px;border-radius:6px 6px 0 0;background:var(--c);box-shadow:inset 0 0 0 2px var(--c2,rgba(19,32,27,.7))}
+.cell .tn{display:block;font-size:11.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cell b{font:800 22px/1.1 var(--num)}
+.cell i{font-style:normal;font-size:11.5px;color:var(--mute);margin-left:5px}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap;background:#E3E8E5;color:#3A4741}
+.pill.done{background:var(--green);color:#fff}.pill.wip{background:var(--amber);color:var(--amber-ink)}
+.pill.no{background:#fff;box-shadow:inset 0 0 0 1.5px var(--line);color:var(--mute)}
+
+/* modal + toast */
+.ov{position:fixed;inset:0;background:rgba(10,25,19,.55);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:#fff;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px))}
+@media(min-width:640px){.ov{align-items:center}.sheet{border-radius:18px}}
+.sheet h2{margin-bottom:2px}
+.trow select.auto{font-style:italic;color:var(--mute);background:#F1F5F2}
+.trow{display:grid;grid-template-columns:1fr 96px 96px;gap:8px;align-items:center;margin-top:8px;padding-left:16px;position:relative}
+.gh{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.fx{display:grid;grid-template-columns:minmax(0,1fr) 58px 14px 58px minmax(0,1fr);gap:6px;align-items:center;padding:7px 0;border-top:1px solid #E8EDEA}
+.fx .fa{text-align:right;font-weight:700}.fx .fb{font-weight:700}.fx span.vs{text-align:center;color:var(--mute)}
+.fx input.sc{text-align:center;padding:8px 2px}
+.fx .fw{grid-column:1/-1;background:#FFF4D6;border-radius:8px;padding:6px 10px}.fx .fw label{margin:0 0 4px}
+.fwhen{grid-column:1/-1;text-align:center;font-size:12.5px;color:var(--mute);margin-top:-3px}
+.fe{display:grid;grid-template-columns:minmax(0,1fr) 16px minmax(0,1fr);gap:8px;align-items:center;padding:10px 0;border-top:1px solid #E8EDEA}
+.fe .vs{text-align:center;color:var(--mute)}.fe .when{grid-column:1/-1}.fe select{padding:9px 8px}
+.fe .fe-b{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap}
+.fe.add{background:var(--soft);border:1px dashed var(--line);border-radius:10px;padding:10px;margin-top:10px}
+.fx.fm{display:block;padding:12px 0}
+.fm-h{display:grid;grid-template-columns:minmax(0,1fr) 56px minmax(0,1fr);gap:8px;align-items:center}
+.fm-h .res{text-align:center;font:800 24px var(--num);color:var(--pitch)}
+.fm-sets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.fm-sets .st{min-width:0}.fm-sets .st .muted{display:block;font-size:12px;margin-bottom:2px}
+.fm-sets .sp{display:flex;gap:4px;align-items:center}.fm-sets .sp span{color:var(--mute)}
+.fm-sets input.sc{width:100%;min-width:0;padding:8px 2px;text-align:center}
+.fm-r{margin-top:8px;font-size:13.5px;color:var(--mute);text-align:center}.fm-r b{color:var(--green)}
+.trow.w4{grid-template-columns:minmax(0,1fr) 58px 84px 70px}.trow.w3{grid-template-columns:minmax(0,1fr) 72px 92px}
+.trow.w4 input,.trow.w4 select,.trow.w3 input{padding:9px 6px}
+.ap{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 0;border-top:1px solid #E8EDEA}
+.game h3{font-size:18px}
+.mdot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1.5px #13201B;margin-right:6px;vertical-align:-1px}
+.mrow{display:grid;grid-template-columns:62px 1fr 118px;gap:8px;align-items:center;margin-top:8px;padding-left:16px;position:relative}
+.mrow .tn{font:700 18px var(--num)}
+.mrow::before{content:'';position:absolute;left:0;top:0;bottom:0;width:7px;border-radius:4px;background:var(--c);box-shadow:inset 0 0 0 2px var(--c2,rgba(19,32,27,.7))}
+.cell .mn{display:block;font:700 15px/1.2 var(--body);overflow-wrap:anywhere}
+.cell .mn+i{display:block;margin:2px 0 0}
+.trow::before{content:'';position:absolute;left:0;top:0;bottom:0;width:7px;border-radius:4px;background:var(--c);box-shadow:inset 0 0 0 2px var(--c2,rgba(19,32,27,.7))}
+.trow .tn{font:700 18px var(--num)}
+.chk{display:flex;gap:9px;align-items:center;font-weight:600;color:var(--ink);font-size:14px;margin:12px 0 0}
+.cs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cs label{margin:6px 0 0}
+details{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+summary{cursor:pointer;font-weight:600;color:var(--mute)}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.acts .btn{flex:1 1 auto}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;z-index:60;max-width:90vw;font-weight:600}
+.warn{background:#FFF4D6;border:1px solid #F0D58A;border-radius:10px;padding:10px 12px;margin-top:10px;font-size:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chips span{background:var(--soft);border:1px solid var(--line);border-radius:99px;padding:2px 10px;font-size:13px}
+@media(max-width:520px){.std .bh{display:none}.std td,.std th{padding:8px 4px}.mx th{font-size:11.5px;padding:6px 3px}.mx td{padding:8px 3px}.filters>div{flex:1 1 100%}.lane{grid-template-columns:26px 98px 1fr}.lane .nm{font-size:15.5px}.hd .t{font-size:28px}.trow{grid-template-columns:1fr 84px 84px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="hd"><div class="hd-in"><div><div class="t" id="hd-title">Valour 2026</div><div class="s">Overall points · Vakil Satellite Township · v1.9.0</div></div><div class="sync" id="sync">Starting…</div></div></header>
+<nav><div class="in"><button data-tab="board" class="on">Leaderboard</button><button data-tab="events">Events</button><button data-tab="games">Team games</button><button data-tab="settings">Settings</button></div></nav>
+<main>
+  <section id="tab-board"></section>
+  <section id="tab-events" hidden></section>
+  <section id="tab-games" hidden></section>
+  <section id="tab-settings" hidden></section>
+</main>
+<div id="ov" class="ov" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+/* ================= data ================= */
+const KEY = 'valour2026.points';
+const DOC = 'valour2026-points';
+const FIREBASE = { apiKey: 'AIzaSyDjLDhsyrpnZVBrSBU9obHA2KFaYkAyqvU', authDomain: 'velour2026-b8385.firebaseapp.com', projectId: 'velour2026-b8385', storageBucket: 'velour2026-b8385.firebasestorage.app', messagingSenderId: '553829591792', appId: '1:553829591792:web:9e6fed2a369c1eddaeb035' };
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const uid = () => Math.random().toString(36).slice(2, 9);
+const MEDAL_NAMES = ['Gold', 'Silver', 'Bronze'], MEDAL_COLORS = ['#E5B422', '#C3C9CD', '#B9743A'];
+function medalOnly(sport) { return /^(rummy|athletics)$/i.test(String(sport || '').trim()); } // participation games: medals only, no team points
+const blankMedals = () => [0, 1, 2].map(() => ({ name: '', team: '' }));
+const ORD = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
+const COLORS = ['#2F6DB5', '#D9472B', '#7A4FB5', '#0E9AA7', '#B8860B', '#C2185B', '#455A64', '#6D4C41'];
+// Official team colours. Applied by team name unless a colour was picked by hand in Settings.
+// Colours sampled from the four team jerseys: main colour + accent.
+const TEAM_COLORS = { dhurandhar: { c: '#111111', c2: '#C6151A' }, spartans: { c: '#FFFFFF', c2: '#1351AD' }, vipers: { c: '#F6EBD2', c2: '#F2853C' }, mavericks: { c: '#FBD722', c2: '#D50619' } };
+function teamColorFor(name) { const k = String(name || '').toLowerCase(); for (const key in TEAM_COLORS) if (k.includes(key)) return TEAM_COLORS[key]; return null; }
+const OLD_AUTO = ['#f3e3b5', '#ffd500'];
+const isDefaultColor = (c) => { const x = String(c || '').toLowerCase(); return !x || COLORS.some((d) => d.toLowerCase() === x) || OLD_AUTO.includes(x) || Object.values(TEAM_COLORS).some((v) => v.c.toLowerCase() === x); };
+const isDefaultColor2 = (c) => { const x = String(c || '').toLowerCase(); return !x || x === '#13201b' || Object.values(TEAM_COLORS).some((v) => v.c2.toLowerCase() === x); };
+const fmt = (n) => (n == null ? '–' : String(Math.round(n * 10) / 10));
+
+// The schedule exactly as in "Valour 26 - Schedule.xlsx": [stage, category, sport]
+const SCHEDULE = [
+  ['League + Finals', 'Sr Citizen', 'Rummy'], ['Leagues', 'Above 50', 'Carroms'], ['Friendly Matches (18+)', 'Above 18', 'Basketball'],
+  ['League + Finals', 'Below 13', 'Athletics'], ['Leagues', 'Below 18', 'Throwball'], ['League + Finals', 'Above 50', 'Carroms'],
+  ['Leagues', "Women's", 'Cricket'], ['Leagues', 'Junior', 'Cricket'], ['Leagues', 'Below 18', 'Basketball'], ['Leagues', "Men's", 'Cricket'],
+  ['Leagues', "Women's", 'Throwball'], ['Finals', "Men's", 'Cricket'], ['Finals', 'Junior', 'Cricket'], ['Leagues', 'All Ages', 'TT'],
+  ['Leagues', "Men's", 'Volleyball'], ['League + Finals', 'All Ages', 'TT'], ['Finals', 'Below 18', 'Basketball'], ['League + Finals', 'All Ages', 'Badminton'],
+  ['SF + Finals', 'All Ages', 'Badminton'], ['League + Finals', 'Below 18', 'Football'], ['Finals', "Women's", 'Throwball'], ['Finals', 'Below 18', 'Throwball'],
+  ['Finals', "Men's", 'Volleyball'], ['Finals', "Women's", 'Cricket'],
+];
+function defaults() {
+  return {
+    name: 'Valour 2026',
+    teams: [1, 2, 3, 4].map((i) => ({ id: 't' + i, name: 'Team ' + i, color: COLORS[i - 1] })),
+    scheme: [50, 25, 15, 10, 10, 10, 10, 10], // Gold, Silver, Bronze, 4th (participation) and below; editable in Settings
+    events: SCHEDULE.map((r, i) => ({ id: 'e' + (i + 1), stage: r[0], category: r[1], sport: r[2], kind: medalOnly(r[2]) ? 'medals' : /friendly/i.test(r[0]) ? 'friendly' : 'points', medals: blankMedals(), counts: true, done: false, pts: {}, place: {}, wins: {}, scheme: null, note: '' })),
+    final: null, updated: 0, schema: 4, tourneys: {}, leaguePts: { win: 5 }, thirdRule: 'always', cricketAuto: true, cricketMap: {},
+  };
+}
+function norm(t) {
+  t.teams = (t.teams || []).map((x, i) => { const kn = teamColorFor(x.name); return { id: x.id || 't' + uid(), name: x.name || 'Team ' + (i + 1), color: (kn && isDefaultColor(x.color) ? kn.c : x.color) || COLORS[i % COLORS.length], color2: (kn && isDefaultColor2(x.color2) ? kn.c2 : x.color2) || '#13201B' }; });
+  t.scheme = Array.from({ length: 8 }, (_, i) => (t.scheme && t.scheme[i] != null ? +t.scheme[i] : 0));
+  t.events = (t.events || []).map((e) => ({ id: e.id || 'e' + uid(), stage: e.stage || '', category: e.category || '', sport: e.sport || '', kind: ['medals', 'points', 'friendly'].includes(e.kind) ? e.kind : (medalOnly(e.sport) ? 'medals' : /friendly/i.test(e.stage) ? 'friendly' : 'points'), medals: [0, 1, 2].map((i) => ({ name: (e.medals && e.medals[i] && e.medals[i].name) || '', team: (e.medals && e.medals[i] && e.medals[i].team) || '' })), counts: e.counts !== false, done: !!e.done, pts: e.pts || {}, place: e.place || {}, scheme: Array.isArray(e.scheme) ? e.scheme : null, wins: e.wins && typeof e.wins === 'object' ? e.wins : {}, note: e.note || '' }));
+  // one-time update (schema 2): friendly matches give no points
+  if (!(t.schema >= 2)) t.events.forEach((ev) => { if (ev.kind === 'points' && /friendly/i.test(ev.stage)) ev.kind = 'friendly'; });
+  const nn = (v, d) => (v === '' || v == null || isNaN(+v) ? d : +v);
+  const oldWin = t.leaguePts && t.leaguePts.win; t.leaguePts = { win: nn(oldWin, 5) };
+  // one-time update (schema 3): 5 points for a league match won; 35 / 25 / 15 / 10 for 1st to 4th
+  if (!(t.schema >= 3)) { if (oldWin == null || +oldWin === 2) t.leaguePts.win = 5; if ([5, 3, 2, 1].every((v, i) => +t.scheme[i] === v)) t.scheme = [35, 25, 15, 10, 10, 10, 10, 10]; }
+  // one-time update (schema 4): the Final winner earns 50 (was 35)
+  if (!(t.schema >= 4) && [35, 25, 15, 10].every((v, i) => +t.scheme[i] === v)) t.scheme = [50, 25, 15, 10, 10, 10, 10, 10];
+  t.schema = 4; t.thirdRule = t.thirdRule === 'level' ? 'level' : 'always';
+  const trs = {}; Object.keys(t.tourneys || {}).forEach((k) => { const x = t.tourneys[k] || {}; trs[k] = { matches: (x.matches || []).map((m) => ({ id: m.id || 'm' + uid(), stage: m.stage === 'final' || m.stage === 'third' ? m.stage : 'league', a: m.a, b: m.b, sets: [0, 1, 2].map((i) => { const z = (m.sets && m.sets[i]) || []; return [z[0] == null || z[0] === '' ? null : +z[0], z[1] == null || z[1] === '' ? null : +z[1]]; }), when: m.when || '', round: m.round || 0 })), finalists: Array.isArray(x.finalists) && x.finalists.length === 2 ? x.finalists : null }; }); t.tourneys = trs;
+  t.cricketAuto = t.cricketAuto !== false; t.cricketMap = t.cricketMap && typeof t.cricketMap === 'object' ? t.cricketMap : {};
+  t.final = t.final && t.final.winner ? t.final : null; t.updated = t.updated || 0; t.name = t.name || 'Valour 2026';
+  return t;
+}
+function load() { try { const s = localStorage.getItem(KEY); if (s) return norm(JSON.parse(s)); } catch (_) {} return norm(defaults()); }
+let T = load();
+const UI = { tab: 'board', sport: '', status: 'all', fx: {} };
+
+/* ================= scoring maths ================= */
+const num = (v) => (v === '' || v == null || isNaN(+v) ? null : +v);
+const evPts = (ev, id) => num(ev.pts[id]);
+const noPts = (ev) => ev.kind === 'medals' || ev.kind === 'friendly';
+const evState = (ev) => (ev.done ? 'done' : ev.kind === 'friendly' ? (ev.note ? 'wip' : 'todo') : ev.kind === 'medals' ? (ev.medals.some((m) => m.name || m.team) ? 'wip' : 'todo') : T.teams.some((t) => evPts(ev, t.id) != null || ev.place[t.id]) ? 'wip' : 'todo');
+const STATE_LABEL = { todo: 'To score', wip: 'In progress', done: 'Scored' };
+// Placings left blank are worked out from the points: highest points = 1st, equal points share a placing.
+const hasLeague = (e) => /league/i.test(e.stage || ''), hasFinal = (e) => /final/i.test(e.stage || ''), isLeagueOnly = (e) => hasLeague(e) && !hasFinal(e);
+function effPlaces(ev) {
+  if (isLeagueOnly(ev)) return {}; // league matches give points, never medals
+  const out = {}; const withP = T.teams.filter((t) => evPts(ev, t.id) != null);
+  const distinct = new Set(withP.map((t) => evPts(ev, t.id))).size > 1;
+  T.teams.forEach((t) => { if (ev.place[t.id]) out[t.id] = ev.place[t.id]; else if (distinct && evPts(ev, t.id) != null) out[t.id] = 1 + withP.filter((o) => evPts(ev, o.id) > evPts(ev, t.id)).length; });
+  return out;
+}
+const schemeFor = (ev, place) => { const s = ev && ev.scheme ? ev.scheme : T.scheme; return s[place - 1] == null ? 0 : s[place - 1]; };
+const canEdit = () => !!scorerPin();
+const team = (id) => T.teams.find((t) => t.id === id) || { name: '?', color: '#888' };
+
+// Ranking: total points, then most 1st places, then 2nd, then 3rd. A full tie is left for the organisers to settle.
+function calc() {
+  const rows = T.teams.map((t) => ({ id: t.id, name: t.name, color: t.color, color2: t.color2, pts: 0, g: 0, s: 0, b: 0 }));
+  const R = Object.fromEntries(rows.map((r) => [r.id, r]));
+  const seq = [];
+  T.events.forEach((ev) => {
+    if (!ev.counts || noPts(ev) || evState(ev) === 'todo') return;
+    seq.push(ev);
+    const EP = effPlaces(ev); T.teams.forEach((t) => { const p = evPts(ev, t.id); if (p != null) R[t.id].pts += p; const pl = EP[t.id]; if (pl === 1) R[t.id].g++; else if (pl === 2) R[t.id].s++; else if (pl === 3) R[t.id].b++; });
+  });
+  const same = (a, b) => a.pts === b.pts && a.g === b.g && a.s === b.s && a.b === b.b;
+  const order = rows.slice().sort((a, b) => b.pts - a.pts || b.g - a.g || b.s - a.s || b.b - a.b || a.name.localeCompare(b.name));
+  order.forEach((r, i) => { const p = order[i - 1]; r.rank = p && same(p, r) ? p.rank : i + 1; r.tied = order.some((o) => o !== r && same(o, r)); r.countback = order.some((o) => o !== r && o.pts === r.pts && !same(o, r)); });
+  const counted = T.events.filter((e) => e.counts && !noPts(e));
+  return { rows: order, seq, counted: counted.length, done: counted.filter((e) => e.done).length, left: counted.filter((e) => !e.done) };
+}
+
+/* ================= cloud (same Firebase project + scorer PIN as the cricket app) ================= */
+let CR = null; // latest summary published by the cricket scorer
+const CRICKET_DOC = 'velour2026-summary';
+const FB = { db: null, ref: null, ready: false, synced: false, applying: false, remoteUpdated: 0 };
+function scorerPin() { try { return localStorage.getItem(KEY + '.pin') || localStorage.getItem('velour2026.cricket.pin') || ''; } catch (_) { return ''; } }
+function setSync(msg) { const el = $('sync'); if (el) el.textContent = msg; }
+const clock = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+function adopt(remote) { T = remote; try { localStorage.setItem(KEY, JSON.stringify(T)); } catch (_) {} FB.remoteUpdated = T.updated || 0; applyCricket(); if ($('ov').hidden) render(); }
+async function pushNow() {
+  try { await FB.ref.set({ json: JSON.stringify(T), updated: T.updated, pin: scorerPin() }); FB.remoteUpdated = T.updated; setSync('Cloud · scorer · saved ' + clock()); return true; }
+  catch (e) { const denied = /permission|denied/i.test(String((e && e.code) || e)); setSync(denied ? 'Cloud rejected the save — wrong scorer PIN' : 'Sync error — check internet'); if (denied) toast('Wrong scorer PIN — changes are not reaching the cloud'); console.error(e); return false; }
+}
+async function cloudInit() {
+  try {
+    setSync('Connecting to cloud…');
+    for (const src of ['https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js', 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js'])
+      await new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = src; sc.onload = res; sc.onerror = rej; document.head.appendChild(sc); });
+    const app = window.firebase.apps.length ? window.firebase.app() : window.firebase.initializeApp(FIREBASE);
+    FB.db = window.firebase.firestore(app); FB.ready = true; FB.ref = FB.db.collection('tournaments').doc(DOC);
+    // First contact. A phone that has never saved anything always takes the cloud copy. A scorer whose own data is newer sends it up.
+    const snap = await FB.ref.get(); const d = snap.exists ? snap.data() : null;
+    if (d && d.json) {
+      const remote = norm(JSON.parse(d.json)); FB.remoteUpdated = remote.updated || 0;
+      if (!canEdit() || !T.updated || (remote.updated || 0) >= T.updated) adopt(remote);
+      else await pushNow();
+    } else if (canEdit()) { T.updated = T.updated || Date.now(); try { localStorage.setItem(KEY, JSON.stringify(T)); } catch (_) {} await pushNow(); }
+    FB.synced = true;
+    try { FB.sumRef = FB.db.collection('tournaments').doc(CRICKET_DOC); const ss = await FB.sumRef.get(); if (ss.exists && ss.data().json) takeCricket(JSON.parse(ss.data().json)); FB.sumRef.onSnapshot((sn) => { const d = sn.data(); if (d && d.json) takeCricket(JSON.parse(d.json)); }); } catch (e) { console.error('cricket link', e); }
+    FB.ref.onSnapshot((sn) => { const x = sn.data(); if (!x || !x.json) return; const remote = norm(JSON.parse(x.json)); FB.remoteUpdated = remote.updated || 0; if ((remote.updated || 0) > (T.updated || 0)) { FB.applying = true; adopt(remote); FB.applying = false; } });
+    if (!/rejected|Sync error/.test($('sync').textContent)) setSync(canEdit() ? 'Cloud · scorer · in sync ' + clock() : 'Cloud · view only — enter the scorer PIN in Settings to edit');
+    if (UI.tab === 'settings' && $('ov').hidden) render();
+  } catch (e) { setSync('Cloud connection failed — check internet'); console.error(e); }
+}
+let cloudTimer = null;
+function cloudSave() {
+  if (FB.applying) return;
+  if (!FB.ready || !FB.synced) { if (canEdit()) setSync('Saved on this phone — waiting for the cloud connection'); return; }
+  if (!canEdit()) { setSync('Not saved to cloud — enter the scorer PIN in Settings'); return; }
+  clearTimeout(cloudTimer); cloudTimer = setTimeout(() => { pushNow(); }, 600);
+}
+async function pullNow() {
+  if (!FB.ready) { toast('Not connected to the cloud yet'); return; }
+  try { const snap = await FB.ref.get(); const d = snap.exists ? snap.data() : null; if (!d || !d.json) { toast('There is no cloud copy yet'); return; } if (!confirm('Replace the data on this phone with the copy in the cloud?')) return; adopt(norm(JSON.parse(d.json))); toast('Loaded from the cloud'); } catch (e) { toast('Could not reach the cloud'); }
+}
+async function sendNow() {
+  if (!FB.ready) { toast('Not connected to the cloud yet'); return; }
+  if (!confirm('Replace the copy in the cloud with the data on this phone? Everyone will then see this phone\'s data.')) return;
+  T.updated = Date.now(); try { localStorage.setItem(KEY, JSON.stringify(T)); } catch (_) {} FB.synced = true;
+  if (await pushNow()) { render(); toast('Sent to the cloud'); }
+}
+
+function persist() { T.updated = Date.now(); try { localStorage.setItem(KEY, JSON.stringify(T)); } catch (_) {} cloudSave(); }
+function save() { persist(); render(); }
+
+/* ================= cricket link: the cricket scorer's league + final points fill in the cricket events ================= */
+const CRICKET_CAT = { men: "men's", women: "women's", junior: 'junior' };
+const isCricketEv = (e) => e.kind === 'points' && /^cricket$/i.test(String(e.sport || '').trim());
+const cricketLeagueOf = (ev) => { const c = String(ev.category || '').trim().toLowerCase(); return Object.keys(CRICKET_CAT).find((k) => CRICKET_CAT[k] === c) || null; };
+const nz = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+function guessTeam(cname) { const n = nz(cname); if (n.length < 3) return null; const t = T.teams.find((x) => nz(x.name) === n) || T.teams.find((x) => nz(x.name).length >= 3 && (n.includes(nz(x.name)) || nz(x.name).includes(n))); return t ? t.id : null; }
+function cricketTeamId(lg, cname) { const m = T.cricketMap[lg + '|' + cname]; if (m === 'none') return null; if (m && T.teams.some((t) => t.id === m)) return m; return guessTeam(cname); }
+const cricketTag = (e) => (isCricketEv(e) && T.cricketAuto !== false && CR && cricketLeagueOf(e) && CR.leagues[cricketLeagueOf(e)] ? '<span class="pill no">From cricket scorer</span> ' : '');
+function applyCricket() {
+  if (!CR || !CR.leagues || T.cricketAuto === false) return false; let changed = false;
+  T.events.forEach((ev) => {
+    if (!isCricketEv(ev)) return; const lg = cricketLeagueOf(ev); const L = lg && CR.leagues[lg]; if (!L) return;
+    const lgS = hasLeague(ev), fnS = hasFinal(ev); ev.wins = ev.wins || {};
+    T.teams.forEach((t) => {
+      const ct = L.teams.find((c) => cricketTeamId(lg, c.name) === t.id); let pts = null, wins = null, place = null;
+      if (ct) { if (lgS && ct.played > 0) { wins = ct.wins; pts = ct.leaguePts; } if (fnS && ct.place) { place = ct.place; pts = (lgS ? ct.leaguePts : 0) + (ct.finalPts || 0); } }
+      const cur = [ev.pts[t.id] == null ? null : +ev.pts[t.id], ev.wins[t.id] == null ? null : +ev.wins[t.id], ev.place[t.id] || null];
+      if (cur[0] !== pts || cur[1] !== wins || cur[2] !== place) { ev.pts[t.id] = pts; ev.wins[t.id] = wins; ev.place[t.id] = place; changed = true; }
+    });
+    const done = fnS ? !!L.decided : !!L.leagueDone; if (ev.done !== done) { ev.done = done; changed = true; }
+  });
+  return changed;
+}
+function takeCricket(sum) { CR = sum; if (applyCricket()) { if (canEdit() && FB.synced) save(); else render(); } else if (UI.tab === 'settings' && $('ov').hidden) render(); }
+
+/* ================= ui helpers ================= */
+let toastTimer = null;
+function toast(m) { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 2800); }
+function openModal(html) { $('sheet').innerHTML = html; $('ov').hidden = false; $('sheet').scrollTop = 0; }
+function closeModal() { $('ov').hidden = true; $('sheet').innerHTML = ''; }
+$('ov').addEventListener('mousedown', (e) => { if (e.target === $('ov')) closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('ov').hidden) closeModal(); });
+function download(name, text, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }
+
+document.querySelectorAll('nav button').forEach((b) => b.addEventListener('click', () => { UI.tab = b.dataset.tab; render(); window.scrollTo(0, 0); }));
+function render() {
+  $('hd-title').textContent = T.name || 'Valour 2026';
+  document.querySelectorAll('nav button').forEach((b) => b.classList.toggle('on', b.dataset.tab === UI.tab));
+  for (const t of ['board', 'events', 'games', 'settings']) $('tab-' + t).hidden = t !== UI.tab;
+  ({ board: renderBoard, events: renderEvents, games: renderGames, settings: renderSettings })[UI.tab]();
+}
+
+/* ================= leaderboard ================= */
+function raceChart(rows) {
+  const { seq } = calc();
+  if (seq.length < 2) return '<div class="muted" style="padding:10px 0">The race chart appears once two events have points.</div>';
+  const cw = Math.max(300, Math.min((($('tab-board') && $('tab-board').clientWidth) || 700) - 34, 820)); const lab = (t, v) => Math.min(t.name.length, 14) + 1 + String(fmt(v)).length; const longest = Math.max(...T.teams.map((t) => lab(t, rows.find((r) => r.id === t.id).pts)));
+  const W = cw, H = 300, L = 36, R = Math.min(200, Math.round(38 + 8 * longest)), Tp = 14, B = 46;
+  const cum = T.teams.map((t) => { let s = 0; return [0].concat(seq.map((ev) => (s += evPts(ev, t.id) || 0))); });
+  const maxV = Math.max(1, ...cum.map((c) => c[c.length - 1])); const step = maxV <= 10 ? 2 : maxV <= 25 ? 5 : maxV <= 60 ? 10 : 20; const top = Math.ceil(maxV / step) * step;
+  const x = (i) => L + (W - L - R) * i / seq.length, y = (v) => Tp + (H - Tp - B) * (1 - v / top);
+  let g = ''; for (let v = 0; v <= top; v += step) g += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#E1E7E3"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="12" fill="#5B6963">${v}</text>`;
+  const every = Math.ceil(seq.length / 12); let xl = ''; seq.forEach((ev, i) => { if ((i + 1) % every === 0 || i === seq.length - 1) xl += `<text x="${x(i + 1)}" y="${H - 26}" text-anchor="middle" font-size="12" fill="#5B6963">${i + 1}</text>`; });
+  const ends = T.teams.map((t, k) => ({ t, k, yy: y(cum[k][cum[k].length - 1]) })).sort((a, b) => a.yy - b.yy); for (let i = 1; i < ends.length; i++) if (ends[i].yy - ends[i - 1].yy < 19) ends[i].yy = ends[i - 1].yy + 19;
+  const lines = T.teams.map((t, k) => { const pts = cum[k].map((v, i) => x(i) + ',' + y(v)).join(' '); return `<polyline fill="none" stroke="${t.color2}" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" points="${pts}"/><polyline fill="none" stroke="${t.color}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="${pts}"/>`; }).join('');
+  const dots = T.teams.map((t, k) => `<circle cx="${x(seq.length)}" cy="${y(cum[k][seq.length])}" r="6" fill="${t.color}" stroke="${t.color2}" stroke-width="2.6"/>`).join('');
+  const labels = ends.map((e) => `<circle cx="${W - R + 14}" cy="${e.yy}" r="5.5" fill="${e.t.color}" stroke="${e.t.color2}" stroke-width="2.4"/><text x="${W - R + 25}" y="${e.yy + 5}" font-size="13.5" font-weight="700" fill="#13201B">${esc(e.t.name.length > 14 ? e.t.name.slice(0, 13) + '…' : e.t.name)} ${fmt(cum[e.k][seq.length])}</text>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumulative points after each scored event: ${esc(rows.map((r) => r.name + ' ' + fmt(r.pts)).join(', '))}">${g}${xl}${lines}${dots}${labels}<text x="${L}" y="${H - 5}" font-size="12" fill="#5B6963">Events scored, in schedule order</text></svg>`;
+}
+function medalCard() {
+  const med = T.events.filter((e) => e.kind === 'medals'); if (!med.length) return '';
+  const who = (m) => (m.name || m.team ? `<b>${esc(m.name || '–')}</b>${m.team ? `<div class="muted">${esc(team(m.team).name)}</div>` : ''}` : '<span class="muted">–</span>');
+  return `<div class="card"><h2>Medal winners</h2><p class="muted" style="margin:0 0 8px">Participation events give medals only, with no team points.</p><div class="scroll"><table><thead><tr><th>Event</th>${MEDAL_NAMES.map((m, i) => `<th><span class="mdot" style="--c:${MEDAL_COLORS[i]}"></span>${m}</th>`).join('')}</tr></thead><tbody>${med.map((e) => `<tr><td><b>${esc(e.sport)}</b><div class="muted">${esc(e.category)} · ${esc(e.stage)}</div></td>${e.medals.map((m) => `<td>${who(m)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></div>`;
+}
+function medalGrid(e) {
+  return `<div class="g" style="grid-template-columns:repeat(3,1fr)">${e.medals.map((m, i) => `<div class="cell" style="--c:${MEDAL_COLORS[i]}"><span class="tn">${MEDAL_NAMES[i]}</span><span class="mn">${m.name ? esc(m.name) : '–'}</span>${m.team ? `<i>${esc(team(m.team).name)}</i>` : ''}</div>`).join('')}</div>`;
+}
+function sportMatrix() {
+  const sports = [...new Set(T.events.filter((e) => !noPts(e)).map((e) => e.sport))].filter(Boolean);
+  const data = sports.map((sp) => { const sums = T.teams.map(() => 0); let any = false; T.events.forEach((ev) => { if (ev.sport !== sp || !ev.counts || noPts(ev) || evState(ev) === 'todo') return; any = true; T.teams.forEach((t, i) => { sums[i] += evPts(ev, t.id) || 0; }); }); return { sp, sums, any }; });
+  const tot = T.teams.map((_, i) => data.reduce((a, d) => a + d.sums[i], 0));
+  return `<div class="scroll"><table class="mx"><thead><tr><th>Sport</th>${T.teams.map((t) => `<th class="n" style="--c:${t.color};--c2:${t.color2}"><span class="dot"></span>${esc(t.name)}</th>`).join('')}</tr></thead><tbody>${data.map((d) => { const mx = Math.max(...d.sums); return `<tr><td><b>${esc(d.sp)}</b></td>${d.sums.map((v) => `<td class="n c ${d.any && v === mx && mx > 0 ? 'lead' : ''}" style="${d.any && mx > 0 && v > 0 ? 'background:rgba(15,61,46,' + (0.05 + 0.2 * v / mx).toFixed(2) + ')' : ''}">${d.any ? fmt(v) : '–'}</td>`).join('')}</tr>`; }).join('')}</tbody><tfoot><tr><td>Total</td>${tot.map((v) => `<td class="n c">${fmt(v)}</td>`).join('')}</tr></tfoot></table></div>`;
+}
+function renderBoard() {
+  const { rows, counted, done, left } = calc(); const el = $('tab-board'); const medN = T.events.filter((e) => e.kind === 'medals').length;
+  const lead = rows[0], sec = rows[1] || rows[0]; const any = rows.some((r) => r.pts > 0);
+  let head = 'No points yet';
+  if (any) { const gap = lead.pts - sec.pts; head = lead.tied && gap === 0 ? 'Level at the top' : gap === 0 ? lead.name + ' ahead on countback' : lead.name + ' leads by ' + fmt(gap); }
+  const mx = Math.max(1, rows[0].pts) / 0.78;
+  const fin = T.final;
+  const champ = fin ? `<div class="champ"><div><div class="l">Valour 2026 champions</div><div class="b1">${esc(team(fin.winner).name)}</div></div><div><div class="l">Runner-up</div><div class="b2">${esc(team(fin.runner).name)}</div></div></div>` : '';
+  const sub = fin ? `Result declared ${new Date(fin.at).toLocaleDateString([], { day: 'numeric', month: 'long' })}.${fin.note ? ' ' + esc(fin.note) : ''}` : `${done} of ${counted} events scored. The winner and runner-up are declared after the last event.${medN ? ' Participation events (' + medN + ') give medals only, with no team points.' : ''}`;
+  const lanes = rows.map((r) => { const w = Math.max(0, r.pts) / mx * 100; return `<div class="lane" style="--c:${r.color};--c2:${r.color2};--w:${w.toFixed(1)}%"><div class="rk">${any ? r.rank : '–'}</div><div class="nm">${esc(r.name)}</div><div class="track"><div class="fill"></div><div class="val">${fmt(r.pts)}</div></div></div>`; }).join('');
+  const tbl = `<div class="scroll"><table class="std"><thead><tr><th></th><th>Team</th><th class="n">Points</th><th class="n bh">Behind</th><th class="n">Gold</th><th class="n">Silver</th><th class="n">Bronze</th></tr></thead><tbody>${rows.map((r) => `<tr class="${!any ? '' : r.rank === 1 ? 'r1' : r.rank === 2 ? 'r2' : ''}" style="--c:${r.color};--c2:${r.color2}"><td class="rk">${any ? r.rank : '–'}</td><td><span class="dot"></span><b>${esc(r.name)}</b>${fin && fin.winner === r.id ? '<span class="tag">Champions</span>' : fin && fin.runner === r.id ? '<span class="tag sil">Runner-up</span>' : ''}${any && r.tied ? ' <span class="muted">level, organisers decide</span>' : any && r.countback ? ' <span class="muted">ahead on countback</span>' : ''}</td><td class="n pts">${fmt(r.pts)}</td><td class="n bh">${r.pts === rows[0].pts ? '–' : '−' + fmt(rows[0].pts - r.pts)}</td><td class="n">${r.g}</td><td class="n">${r.s}</td><td class="n">${r.b}</td></tr>`).join('')}</tbody></table></div><p class="muted" style="margin:8px 0 0">Ranked by total points, then most gold, silver and bronze medals.</p>`;
+  let finish;
+  if (fin) finish = `<p>The result was declared on ${new Date(fin.at).toLocaleString([], { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}.</p>${canEdit() ? '<button class="btn ghost sm" data-act="undeclare">Undo the declaration</button>' : ''}`;
+  else finish = `<p>${left.length ? `<b>${left.length}</b> of ${counted} events are not marked as scored yet.` : 'Every event is scored.'}</p>${left.length ? `<div class="chips">${left.slice(0, 8).map((e) => `<span>${esc(e.sport)} · ${esc(e.category)} · ${esc(e.stage)}</span>`).join('')}${left.length > 8 ? `<span>+${left.length - 8} more</span>` : ''}</div>` : ''}${canEdit() ? '<div style="margin-top:12px"><button class="btn amber" data-act="declare">Declare winner &amp; runner-up</button></div>' : '<p class="muted">The scorers declare the result once the last event is done.</p>'}`;
+  el.innerHTML = `<div class="card hero">${champ}<h1>${esc(head)}</h1><p class="sub">${sub}</p><div class="prog"><i style="width:${counted ? (done / counted * 100).toFixed(1) : 0}%"></i></div><div class="lanes">${lanes}</div></div>
+  <div class="card"><h2>Standings</h2>${tbl}</div>
+  <div class="card chart"><h2>Points race</h2>${raceChart(rows)}</div>
+  <div class="card"><h2>Points by sport</h2>${sportMatrix()}</div>
+  ${medalCard()}
+  <div class="card"><h2>${fin ? 'Result' : 'Finish the tournament'}</h2>${finish}</div>`;
+}
+function declareDialog() {
+  const { rows, left } = calc();
+  const opt = (sel) => T.teams.map((t) => `<option value="${t.id}" ${t.id === sel ? 'selected' : ''}>${esc(t.name)}</option>`).join('');
+  const tie = rows[0].tied || (rows[1] && rows[1].tied);
+  openModal(`<h2>Declare the result</h2><p class="muted">Winner and runner-up default to the current standings. Change them only if the organisers decide so.</p>
+    ${left.length ? `<div class="warn"><b>${left.length}</b> event${left.length === 1 ? ' is' : 's are'} not marked as scored yet. You can still declare now and undo it later.</div>` : ''}
+    ${tie ? '<div class="warn">Two or more teams are level on points and countback. Choose the winner and runner-up the organisers agreed (for example by head-to-head).</div>' : ''}
+    <label>Winner</label><select id="dw">${opt(rows[0].id)}</select><label>Runner-up</label><select id="dr">${opt(rows[1].id)}</select>
+    <label>Note (optional)</label><input id="dn" placeholder="e.g. Won on first places">
+    <div class="acts"><button class="btn amber" id="d-ok">Declare result</button><button class="btn ghost" data-act="close">Cancel</button></div>`);
+  $('d-ok').addEventListener('click', () => { const w = $('dw').value, r = $('dr').value; if (w === r) { toast('Winner and runner-up must be different teams'); return; } T.final = { winner: w, runner: r, at: Date.now(), note: $('dn').value.trim() }; closeModal(); save(); toast('Result declared'); });
+}
+
+/* ================= events ================= */
+function renderEvents() {
+  const el = $('tab-events'); const sports = [...new Set(T.events.map((e) => e.sport))].filter(Boolean);
+  const list = T.events.map((e, i) => ({ e, i })).filter(({ e }) => (!UI.sport || e.sport === UI.sport) && (UI.status === 'all' || (UI.status === 'todo' ? evState(e) !== 'done' : evState(e) === 'done')));
+  const N = T.teams.length;
+  el.innerHTML = `<div class="filters"><div><label for="f-sport">Sport</label><select id="f-sport"><option value="">All sports</option>${sports.map((s) => `<option ${UI.sport === s ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select></div>
+    <div><label>Show</label><div class="seg">${[['all', 'All'], ['todo', 'To score'], ['done', 'Scored']].map(([k, l]) => `<button data-f="${k}" class="${UI.status === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
+    ${canEdit() ? '<div style="flex:0 0 auto"><button class="btn amber" data-act="new-event">Add event</button></div>' : ''}</div>
+    <p class="muted" style="margin:0 0 10px">${canEdit() ? 'Tap an event to enter placings and points, or the medal winners for participation events.' : 'Tap an event to see its result. Enter the scorer PIN in Settings to edit.'}</p>
+    <div class="evs">${list.length ? list.map(({ e, i }) => { const st = evState(e), EP = effPlaces(e); return `<button class="ev ${st}" data-ev="${e.id}"><div class="h"><div><div class="sp">${esc(e.sport)}</div><div class="cg">${esc(e.category)} · ${esc(e.stage)} · #${i + 1}</div></div><div>${e.kind === 'medals' ? '<span class="pill no">Medals only</span> ' : e.kind === 'friendly' ? '<span class="pill no">Friendly · no points</span> ' : e.counts ? '' : '<span class="pill no">Not counted</span> '}${cricketTag(e)}<span class="pill ${st}">${STATE_LABEL[st]}</span></div></div>${e.kind === 'friendly' ? '' : e.kind === 'medals' ? medalGrid(e) : `<div class="g" style="grid-template-columns:repeat(${N},1fr)">${T.teams.map((t) => { const p = evPts(e, t.id), pl = EP[t.id]; return `<div class="cell" style="--c:${t.color};--c2:${t.color2}"><span class="tn">${esc(t.name)}</span><b>${fmt(p)}</b>${pl ? `<i>${ORD[pl - 1]}</i>` : hasLeague(e) && e.wins && e.wins[t.id] != null ? `<i>${e.wins[t.id]}W</i>` : ''}</div>`; }).join('')}</div>`}${e.note ? `<div class="muted" style="margin-top:8px">${esc(e.note)}</div>` : ''}</button>`; }).join('') : '<div class="card muted">No events match this filter.</div>'}</div>`;
+  $('f-sport').addEventListener('change', (ev) => { UI.sport = ev.target.value; renderEvents(); });
+  el.querySelectorAll('[data-f]').forEach((b) => b.addEventListener('click', () => { UI.status = b.dataset.f; renderEvents(); }));
+}
+function openEditor(id) {
+  const isNew = !id; const edit = canEdit();
+  const ev = isNew ? { id: null, stage: '', wins: {}, category: '', sport: '', kind: 'points', medals: blankMedals(), counts: true, done: false, pts: {}, place: {}, scheme: null, note: '' } : T.events.find((e) => e.id === id);
+  if (!ev) return;
+  const N = T.teams.length;
+  const dis = edit ? '' : 'disabled';
+  const EPS = effPlaces(ev); const hasW = ev.kind === 'points' && hasLeague(ev), hasP = !isLeagueOnly(ev);
+  const rowsHtml = T.teams.map((t) => `<div class="trow ${hasW ? (hasP ? 'w4' : 'w3') : ''}" style="--c:${t.color};--c2:${t.color2}"><div class="tn">${esc(t.name)}</div>${hasW ? `<input type="number" min="0" step="1" inputmode="numeric" data-wins="${t.id}" aria-label="${esc(t.name)} league matches won" placeholder="Wins" value="${ev.wins && ev.wins[t.id] != null ? ev.wins[t.id] : ''}" ${dis}>` : ''}${hasP ? `<select data-place="${t.id}" data-auto="${!ev.place[t.id] && EPS[t.id] ? 1 : 0}" class="${!ev.place[t.id] && EPS[t.id] ? 'auto' : ''}" aria-label="${esc(t.name)} placing" ${dis}><option value="">Place</option>${T.teams.map((_, i) => `<option value="${i + 1}" ${EPS[t.id] === i + 1 ? 'selected' : ''}>${ORD[i]}</option>`).join('')}</select>` : ''}<input type="number" step="any" inputmode="decimal" data-pts="${t.id}" aria-label="${esc(t.name)} points" placeholder="Pts" value="${evPts(ev, t.id) == null ? '' : evPts(ev, t.id)}" ${dis}></div>`).join('');
+  const helpHtml = hasW ? `<p class="muted" style="margin:8px 0 0">Enter how many league matches each team won: ${T.leaguePts.win} points for each win${hasP ? ', plus the points for the final placing' : ''}. You can also type the points yourself.</p>` : '<p class="muted" style="margin:8px 0 0">Pick a placing and the points fill in. Or type the points and the placings are worked out for you (highest points = 1st, equal points share a placing). You can change any placing by hand.</p>';
+  const cs = ev.scheme || T.scheme;
+  const isMed = ev.kind === 'medals';
+  const medalsHtml = `<div id="ed-mwrap" ${isMed ? '' : 'hidden'}><p class="muted" style="margin:10px 0 0">Participation event: medals only, no team points. Enter the winners.</p>${MEDAL_NAMES.map((m, i) => `<div class="mrow" style="--c:${MEDAL_COLORS[i]}"><div class="tn">${m}</div><input data-mname="${i}" placeholder="Winner name(s)" aria-label="${m} winner" value="${esc(ev.medals[i].name)}" ${dis}><select data-mteam="${i}" aria-label="${m} team" ${dis}><option value="">Team</option>${T.teams.map((t) => `<option value="${t.id}" ${ev.medals[i].team === t.id ? 'selected' : ''}>${esc(t.name)}</option>`).join('')}</select></div>`).join('')}</div>`;
+  openModal(`<h2>${isNew ? 'New event' : esc(ev.sport)}</h2><div class="muted">${isNew ? 'Add an event to the schedule.' : esc(ev.category) + ' · ' + esc(ev.stage)}</div>${isTeamGameEv(ev) ? '<div class="warn" style="margin-top:8px">Tip: run the league and the Final in the <b>Team games</b> tab, then fill in these placings with one tap.</div>' : ''}${cricketTag(ev) ? '<div class="warn" style="margin-top:8px">This event is filled in automatically from the cricket scorer. Changes made here are replaced by the next update. You can switch this off in Settings.</div>' : ''}
+    <label>Event type</label><select id="ed-kind" ${dis}><option value="points" ${ev.kind === 'points' ? 'selected' : ''}>Team points</option><option value="medals" ${isMed ? 'selected' : ''}>Medals only (participation, no team points)</option><option value="friendly" ${ev.kind === 'friendly' ? 'selected' : ''}>Friendly match (no points, no medals)</option></select>
+    <div id="ed-pwrap" ${ev.kind === 'points' ? '' : 'hidden'}><div style="margin-top:10px">${rowsHtml}</div>
+    ${helpHtml}
+    <label class="chk"><input type="checkbox" id="ed-counts" ${ev.counts ? 'checked' : ''} ${dis}> Counts towards the overall total</label><div class="muted">On: this event's points are added to each team's total. Off: the result is recorded but not added (for friendly or exhibition matches).</div>
+    <label class="chk"><input type="checkbox" id="ed-cs" ${ev.scheme ? 'checked' : ''} ${dis}> Different points for this event</label><div class="muted">Off: this event uses the points from Settings. On: it uses its own, for an event worth more or less than usual, such as a final.</div>
+    <div class="cs" id="ed-csw" ${ev.scheme ? '' : 'hidden'}>${T.teams.map((_, i) => `<label>${ORD[i]}<input type="number" step="any" data-cs="${i}" value="${cs[i] == null ? 0 : cs[i]}" ${dis}></label>`).join('')}</div></div>${medalsHtml}<div id="ed-fwrap" ${ev.kind === 'friendly' ? '' : 'hidden'}><p class="muted" style="margin:10px 0 0">Friendly match: no team points and no medals. Write the result in the note below if you like.</p></div>
+    <label>Note</label><textarea id="ed-note" rows="2" placeholder="e.g. Final: Team 2 beat Team 4" ${dis}>${esc(ev.note)}</textarea>
+    ${edit ? `<details ${isNew ? 'open' : ''}><summary>Event details</summary><label>Sport</label><input id="ed-sport" list="sp-list" value="${esc(ev.sport)}"><datalist id="sp-list">${[...new Set(T.events.map((e) => e.sport))].map((s) => `<option value="${esc(s)}">`).join('')}</datalist><label>Category</label><input id="ed-cat" value="${esc(ev.category)}"><label>Stage</label><input id="ed-stage" value="${esc(ev.stage)}">${isNew ? '' : '<div style="margin-top:12px"><button class="btn red sm" data-act="del-event">Delete this event</button></div>'}</details>` : ''}
+    <div class="acts">${edit ? (isNew ? '<button class="btn amber" id="ed-add">Add event</button>' : '<button class="btn" id="ed-save">Save</button><button class="btn amber" id="ed-done">Save &amp; mark scored</button><button class="btn ghost" id="ed-clear">Clear</button>') : ''}<button class="btn ghost" data-act="close">Close</button></div>`);
+  if (!edit) return;
+  const sheet = $('sheet');
+  const curScheme = () => ($('ed-cs').checked ? [...sheet.querySelectorAll('[data-cs]')].map((i) => num(i.value) || 0) : T.scheme);
+  const refreshAuto = () => {
+    if (!sheet.querySelector('[data-place]')) return;
+    const E = T.teams.map((t) => ({ sel: sheet.querySelector(`[data-place="${t.id}"]`), inp: sheet.querySelector(`[data-pts="${t.id}"]`) }));
+    const val = (e) => (e.inp.value.trim() === '' || isNaN(+e.inp.value) ? null : +e.inp.value);
+    E.forEach((e) => { if (e.sel.dataset.auto === '1') { e.sel.value = ''; e.sel.dataset.auto = '0'; e.sel.classList.remove('auto'); } });
+    const withP = E.filter((e) => val(e) != null); const distinct = new Set(withP.map(val)).size > 1;
+    E.forEach((e) => { if (!e.sel.value && distinct && val(e) != null) { const r = 1 + withP.filter((o) => val(o) > val(e)).length; if (r <= T.teams.length) { e.sel.value = String(r); e.sel.dataset.auto = '1'; e.sel.classList.add('auto'); } } });
+  };
+  sheet.querySelectorAll('[data-pts]').forEach((i) => i.addEventListener('input', refreshAuto));
+  sheet.querySelectorAll('[data-place]').forEach((s) => s.addEventListener('change', () => { s.dataset.auto = '0'; s.classList.remove('auto'); const inp = sheet.querySelector(`[data-pts="${s.dataset.place}"]`); const wi = sheet.querySelector(`[data-wins="${s.dataset.place}"]`); const wp = wi && num(wi.value) != null ? num(wi.value) * T.leaguePts.win : 0; if (s.value) { const sc = curScheme(); inp.value = wp + (sc[+s.value - 1] == null ? 0 : sc[+s.value - 1]); } else inp.value = wi && num(wi.value) != null ? wp : ''; refreshAuto(); }));
+  sheet.querySelectorAll('[data-wins]').forEach((w) => w.addEventListener('input', () => { const id = w.dataset.wins, pl = sheet.querySelector(`[data-place="${id}"]`), inp = sheet.querySelector(`[data-pts="${id}"]`); const base = num(w.value) != null ? num(w.value) * T.leaguePts.win : null; const sc = curScheme(); const pv = pl && pl.value ? (sc[+pl.value - 1] == null ? 0 : sc[+pl.value - 1]) : null; inp.value = base == null && pv == null ? '' : (base || 0) + (pv || 0); refreshAuto(); }));
+  $('ed-cs').addEventListener('change', () => { $('ed-csw').hidden = !$('ed-cs').checked; });
+  $('ed-kind').addEventListener('change', () => { const k = $('ed-kind').value; $('ed-pwrap').hidden = k !== 'points'; $('ed-mwrap').hidden = k !== 'medals'; $('ed-fwrap').hidden = k !== 'friendly'; });
+  const gather = (markDone) => {
+    const target = isNew ? { id: 'e' + uid(), pts: {}, place: {}, wins: {}, done: false } : ev;
+    const sport = isNew ? $('ed-sport').value.trim() : ($('ed-sport') ? $('ed-sport').value.trim() : ev.sport);
+    if (!sport) { toast('Enter the sport'); return null; }
+    target.sport = sport; if ($('ed-cat')) target.category = $('ed-cat').value.trim(); if ($('ed-stage')) target.stage = $('ed-stage').value.trim();
+    refreshAuto();
+    target.wins = target.wins || {};
+    T.teams.forEach((t) => { let p = sheet.querySelector(`[data-pts="${t.id}"]`).value.trim(); const plEl = sheet.querySelector(`[data-place="${t.id}"]`), pl = plEl ? plEl.value : ''; const wEl = sheet.querySelector(`[data-wins="${t.id}"]`); if (wEl) target.wins[t.id] = wEl.value.trim() === '' ? null : Math.max(0, Math.round(+wEl.value)); if (p === '' && (pl || (wEl && num(wEl.value) != null))) { const sc = curScheme(); p = String((wEl && num(wEl.value) != null ? num(wEl.value) * T.leaguePts.win : 0) + (pl ? (sc[+pl - 1] == null ? 0 : sc[+pl - 1]) : 0)); } target.pts[t.id] = p === '' ? null : +p; target.place[t.id] = pl ? +pl : null; });
+    target.kind = $('ed-kind').value; target.medals = [0, 1, 2].map((i) => ({ name: sheet.querySelector(`[data-mname="${i}"]`).value.trim(), team: sheet.querySelector(`[data-mteam="${i}"]`).value }));
+    target.counts = $('ed-counts').checked; target.scheme = $('ed-cs').checked ? curScheme() : null; target.note = $('ed-note').value.trim();
+    if (markDone != null) target.done = markDone; return target;
+  };
+  if ($('ed-add')) $('ed-add').addEventListener('click', () => { const t = gather(false); if (!t) return; T.events.push(t); closeModal(); save(); toast('Event added'); });
+  if ($('ed-save')) $('ed-save').addEventListener('click', () => { if (!gather(null)) return; closeModal(); save(); toast('Saved'); });
+  if ($('ed-done')) $('ed-done').addEventListener('click', () => { if (!gather(true)) return; closeModal(); save(); toast('Saved and marked as scored'); });
+  if ($('ed-clear')) $('ed-clear').addEventListener('click', () => { ev.pts = {}; ev.place = {}; ev.wins = {}; ev.medals = blankMedals(); ev.done = false; closeModal(); save(); toast('Cleared'); });
+  sheet.dataset.ev = isNew ? '' : ev.id;
+}
+
+/* ================= team games: league matches are best of 3 sets; a win scores points; Final; 3rd position only if the next two are level ================= */
+const TEAM_GAME = /^(throwball|basketball|volleyball|football)$/i;
+function isTeamGameEv(e) { return e.kind === 'points' && TEAM_GAME.test(String(e.sport || '').trim()); }
+function gameGroups() {
+  const map = new Map();
+  T.events.forEach((e) => { if (!isTeamGameEv(e)) return; const key = e.sport.trim() + '|' + e.category.trim(); if (!map.has(key)) map.set(key, { key, sport: e.sport.trim(), category: e.category.trim(), lg: [], fn: [] }); const g = map.get(key); const L = hasLeague(e), F = hasFinal(e); (F || !L ? g.fn : g.lg).push(e); });
+  return [...map.values()];
+}
+const tourney = (key) => (T.tourneys[key] = T.tourneys[key] || { matches: [], finalists: null });
+const blankSets = () => [[null, null], [null, null], [null, null]];
+const setWin = (s) => (s[0] == null || s[1] == null || s[0] === s[1] ? 0 : s[0] > s[1] ? 1 : 2); // 1 = first team won the set, 2 = second team
+function matchSets(m) { // best of 3: the first team to win 2 sets wins the match
+  let a = 0, b = 0, pa = 0, pb = 0;
+  for (const s of m.sets) { if (a === 2 || b === 2) break; const w = setWin(s); if (!w) break; if (w === 1) a++; else b++; pa += s[0]; pb += s[1]; }
+  return { a, b, pa, pb };
+}
+const mDone = (m) => { const r = matchSets(m); return r.a === 2 || r.b === 2; };
+const mWinner = (m) => { const r = matchSets(m); return r.a === 2 ? m.a : r.b === 2 ? m.b : null; };
+function roundRobin(ids) { const a = ids.slice(); if (a.length % 2) a.push(null); const n = a.length; const rounds = []; for (let r = 0; r < n - 1; r++) { const pairs = []; for (let i = 0; i < n / 2; i++) { const x = a[i], y = a[n - 1 - i]; if (x && y) pairs.push([x, y]); } rounds.push(pairs); a.splice(1, 0, a.pop()); } return rounds; }
+function createFixtures(key) {
+  const tr = tourney(key); const have = new Set(tr.matches.filter((m) => m.stage === 'league').map((m) => [m.a, m.b].sort().join('|')));
+  roundRobin(T.teams.map((t) => t.id)).forEach((pairs, r) => pairs.forEach(([x, y]) => { if (!have.has([x, y].sort().join('|'))) tr.matches.push({ id: uid(), stage: 'league', a: x, b: y, sets: blankSets(), when: '', round: r + 1 }); }));
+}
+function leagueTable(g) {
+  const tr = T.tourneys[g.key]; const ms = (tr ? tr.matches : []).filter((m) => m.stage === 'league'); const W = T.leaguePts.win;
+  const rows = T.teams.map((t) => ({ id: t.id, name: t.name, color: t.color, color2: t.color2, p: 0, w: 0, l: 0, sw: 0, sl: 0, pf: 0, pa: 0, pts: 0 })); const R = Object.fromEntries(rows.map((r) => [r.id, r]));
+  ms.forEach((m) => { if (!mDone(m) || !R[m.a] || !R[m.b]) return; const r = matchSets(m), A = R[m.a], B = R[m.b]; A.p++; B.p++; A.sw += r.a; A.sl += r.b; B.sw += r.b; B.sl += r.a; A.pf += r.pa; A.pa += r.pb; B.pf += r.pb; B.pa += r.pa; if (r.a === 2) { A.w++; B.l++; A.pts += W; } else { B.w++; A.l++; B.pts += W; } });
+  rows.forEach((r) => { r.sd = r.sw - r.sl; r.pd = r.pf - r.pa; });
+  const order = rows.slice().sort((x, y) => y.pts - x.pts || y.sd - x.sd || y.pd - x.pd || x.name.localeCompare(y.name));
+  const same = (x, y) => x.pts === y.pts && x.sd === y.sd && x.pd === y.pd;
+  order.forEach((r, i) => { const pr = order[i - 1]; r.rank = pr && same(pr, r) ? pr.rank : i + 1; r.level = order.some((o) => o !== r && same(o, r)); });
+  return { rows: order, total: ms.length, played: ms.filter(mDone).length };
+}
+function gameState(g) {
+  const tr = T.tourneys[g.key] || { matches: [], finalists: null }; const N = T.teams.length, need = N * (N - 1) / 2;
+  const lt = leagueTable(g), rows = lt.rows; const lms = tr.matches.filter((m) => m.stage === 'league');
+  const pairs = new Set(lms.map((m) => [m.a, m.b].sort().join('|')));
+  const leagueDone = N >= 3 && pairs.size >= need && lms.every(mDone);
+  const final = tr.matches.find((m) => m.stage === 'final') || null, third = tr.matches.find((m) => m.stage === 'third') || null;
+  const same = (x, y) => !!x && !!y && x.pts === y.pts && x.sd === y.sd && x.pd === y.pd;
+  const chosen = !!(tr.finalists && tr.finalists[0] !== tr.finalists[1] && tr.finalists.every((id) => rows.some((r) => r.id === id)));
+  const fin = chosen ? tr.finalists : rows.slice(0, 2).map((r) => r.id);
+  const ambiguous = !chosen && !final && N > 2 && same(rows[1], rows[2]);
+  const rest = rows.filter((r) => !fin.includes(r.id));
+  const thirdNeeded = N >= 4 && rest.length >= 2 && (T.thirdRule === 'level' ? rest[0].pts === rest[1].pts : true); // by default the bottom two always play
+  const staleFinal = !!final && !(fin.includes(final.a) && fin.includes(final.b));
+  const pair3 = thirdNeeded ? [rest[0].id, rest[1].id] : [];
+  const staleThird = !!third && !(pair3.includes(third.a) && pair3.includes(third.b));
+  let place = null, pending = '';
+  const fw = final && !staleFinal ? mWinner(final) : null;
+  if (leagueDone && fw) {
+    place = {}; place[fw] = 1; place[final.a === fw ? final.b : final.a] = 2;
+    if (thirdNeeded) { const tw = third && !staleThird ? mWinner(third) : null; if (tw) { place[tw] = 3; place[third.a === tw ? third.b : third.a] = 4; rest.slice(2).forEach((r, i) => { place[r.id] = 5 + i; }); } else { place = null; pending = 'Waiting for the 3rd-position match.'; } }
+    else rest.forEach((r, i) => { place[r.id] = 3 + i; });
+  }
+  return { tr, N, need, lt, rows, lms, leagueDone, final, third, fin, chosen, ambiguous, rest, thirdNeeded, staleFinal, staleThird, place, pending };
+}
+function gameStatus(st) { if (!st.lms.length) return ['Not started', 'todo']; if (st.place) return ['Complete', 'done']; if (!st.leagueDone) return ['League · ' + st.lt.played + ' of ' + st.need, 'wip']; return ['Knockouts', 'wip']; }
+const teamOpts = (sel, blank) => (blank ? '<option value="">Choose</option>' : '') + T.teams.map((t) => `<option value="${t.id}" ${t.id === sel ? 'selected' : ''}>${esc(t.name)}</option>`).join('');
+function fxResult(m) {
+  const r = matchSets(m);
+  if (mDone(m)) return `<b>${esc(team(mWinner(m)).name)}</b> won ${Math.max(r.a, r.b)}–${Math.min(r.a, r.b)}`;
+  if (m.sets.some((s) => s[0] != null && s[0] === s[1])) return 'A set cannot end level';
+  return 'Best of 3 sets: the first team to win 2 sets wins';
+}
+const needSet3 = (m) => { const r = matchSets(m); return (r.a < 2 && r.b < 2 && r.a + r.b >= 2) || m.sets[2][0] != null || m.sets[2][1] != null; };
+function fxRow(m, key, dis) {
+  const A = team(m.a), B = team(m.b), r = matchSets(m), s3 = needSet3(m);
+  const inp = (i, k) => `<input class="sc" type="number" min="0" inputmode="numeric" data-s="${i}${k ? 'b' : 'a'}" aria-label="Set ${i + 1}, ${esc(k ? B.name : A.name)}" value="${m.sets[i][k] == null ? '' : m.sets[i][k]}" ${dis}>`;
+  return `<div class="fx fm" data-k="${esc(key)}" data-m="${m.id}"><div class="fm-h"><div class="fa">${esc(A.name)}</div><div class="res">${r.a + r.b ? r.a + '–' + r.b : 'v'}</div><div class="fb">${esc(B.name)}</div></div>${m.when ? `<div class="fwhen">${esc(m.when)}</div>` : ''}<div class="fm-sets">${[0, 1, 2].map((i) => `<div class="st" ${i === 2 && !s3 ? 'hidden' : ''}><span class="muted">Set ${i + 1}</span><div class="sp">${inp(i, 0)}<span>–</span>${inp(i, 1)}</div></div>`).join('')}</div><div class="fm-r">${fxResult(m)}</div></div>`;
+}
+function fxEditRow(m, key, i, n) {
+  const b = (act, label, dis) => `<button class="btn ghost sm" data-act="${act}" data-key="${esc(key)}" data-m="${m.id}" ${dis ? 'disabled' : ''}>${label}</button>`;
+  return `<div class="fe" data-k="${esc(key)}" data-m="${m.id}"><select data-e="a" aria-label="Team A">${teamOpts(m.a)}</select><span class="vs">v</span><select data-e="b" aria-label="Team B">${teamOpts(m.b)}</select><input class="when" data-e="when" placeholder="When (optional), e.g. Sat 5 pm" value="${esc(m.when || '')}"><div class="fe-b">${b('gm-up', '↑ Earlier', i === 0)}${b('gm-down', '↓ Later', i === n - 1)}${b('gm-del', 'Remove', false)}${m.sets.some((s) => s[0] != null || s[1] != null) ? '<span class="muted" style="align-self:center">has a score</span>' : ''}</div></div>`;
+}
+function fxAddRow(key) { return `<div class="fe add" data-k="${esc(key)}"><select data-add="a" aria-label="Team A">${teamOpts('', true)}</select><span class="vs">v</span><select data-add="b" aria-label="Team B">${teamOpts('', true)}</select><input class="when" data-add="when" placeholder="When (optional), e.g. Sat 5 pm"><div class="fe-b"><button class="btn amber sm" data-act="gm-add" data-key="${esc(key)}">Add this match</button></div></div>`; }
+function htmlTable(g, st) {
+  if (!st.lms.length) return '';
+  const { rows, lt } = st;
+  return `<h3 style="margin:16px 0 6px">League table</h3><div class="scroll"><table class="std"><thead><tr><th></th><th>Team</th><th class="n">P</th><th class="n">W</th><th class="n">L</th><th class="n">Sets</th><th class="n">Pts</th></tr></thead><tbody>${rows.map((r, i) => `<tr class="${lt.played && st.fin.includes(r.id) ? 'r1' : ''}" style="--c:${r.color};--c2:${r.color2}"><td class="rk">${lt.played ? r.rank : '–'}</td><td><span class="dot"></span><b>${esc(r.name)}</b>${lt.played && r.level && i < 3 ? ' <span class="muted">level</span>' : ''}</td><td class="n">${r.p}</td><td class="n">${r.w}</td><td class="n">${r.l}</td><td class="n">${r.sw}–${r.sl}</td><td class="n pts">${r.pts}</td></tr>`).join('')}</tbody></table></div><p class="muted" style="margin:6px 0 0">A league match win = ${T.leaguePts.win} points. Level on points: set difference, then points difference.</p>`;
+}
+function htmlKo(g, st, edit) {
+  if (!st.lms.length) return '';
+  const key = g.key, dis = edit ? '' : 'disabled', nm = (id) => esc(team(id).name);
+  let h = `<h3 style="margin:18px 0 6px">Final${st.N >= 4 ? ' and 3rd position' : ''}</h3>`;
+  if (!st.leagueDone) return h + `<p class="muted" style="margin:0">Unlocks when every league match has been played (${st.lt.played} of ${st.need}).</p>`;
+  if (!st.final) {
+    if (st.ambiguous) h += `<div class="warn">${nm(st.rows[1].id)} and ${nm(st.rows[2].id)} are level for the second place in the Final. The organisers choose the finalists.</div>${edit ? `<div class="row" style="margin-top:8px"><div><label>Finalist 1</label><select data-fin="0">${teamOpts('', true)}</select></div><div><label>Finalist 2</label><select data-fin="1">${teamOpts('', true)}</select></div></div>` : ''}`;
+    else h += `<p style="margin:6px 0 8px">The top 2 play the Final: <b>${nm(st.fin[0])}</b> v <b>${nm(st.fin[1])}</b>.</p>`;
+    if (edit) h += `<button class="btn amber" data-act="gm-final" data-key="${esc(key)}" ${st.ambiguous ? 'disabled' : ''}>Create the Final</button>`;
+  } else h += `${st.staleFinal ? '<div class="warn">League results changed: this Final no longer matches the top 2. Reset the Final and 3rd-position match to create it again.</div>' : ''}<div class="muted" style="margin-top:6px">Final</div>${fxRow(st.final, key, dis)}`;
+  if (st.N >= 4 && !st.ambiguous) {
+    if (st.thirdNeeded) {
+      h += `<p style="margin:14px 0 6px">${T.thirdRule === 'level' ? `The next two teams, <b>${nm(st.rest[0].id)}</b> and <b>${nm(st.rest[1].id)}</b>, are level on ${st.rest[0].pts} league points, so they play for 3rd position.` : `The bottom two teams, <b>${nm(st.rest[0].id)}</b> and <b>${nm(st.rest[1].id)}</b>, play for 3rd position.`}</p>`;
+      if (!st.third) { if (edit) h += `<button class="btn amber" data-act="gm-third" data-key="${esc(key)}">Create the 3rd-position match</button>`; }
+      else h += `${st.staleThird ? '<div class="warn">This match no longer matches the two teams that are level. Reset the Final and 3rd-position match to create it again.</div>' : ''}<div class="muted">3rd position</div>${fxRow(st.third, key, dis)}`;
+    } else h += `<p class="muted" style="margin:14px 0 0">3rd and 4th are not level on points, so the league table decides: 3rd <b>${nm(st.rest[0].id)}</b>, 4th <b>${nm(st.rest[1].id)}</b>.</p>`;
+  }
+  if ((st.final || st.third) && edit) h += `<div style="margin-top:12px"><button class="btn ghost sm" data-act="gm-reset-ko" data-key="${esc(key)}">Reset the Final and 3rd-position match</button></div>`;
+  return h;
+}
+const placeName = (p) => (p === 1 ? 'Gold' : p === 2 ? 'Silver' : p === 3 ? 'Bronze' : ORD[p - 1]);
+function gamePts(ev, st, which, id) { // points a team earns in one event of a team game
+  const w = st.rows.find((r) => r.id === id); const wins = w ? w.w : 0;
+  const pl = which === 'final' && st.place ? st.place[id] : null;
+  return (hasLeague(ev) ? wins * T.leaguePts.win : 0) + (pl ? schemeFor(ev, pl) : 0);
+}
+function htmlApply(g, st, edit) {
+  const out = []; const stages = (evs) => evs.map((e) => esc(e.stage)).join(' + ');
+  if (st.leagueDone && g.lg.length) out.push(`<div class="ap"><div><b>League result</b><div class="muted">${st.rows.map((r) => `${esc(r.name)} ${r.w} win${r.w === 1 ? '' : 's'} (${gamePts(g.lg[0], st, 'league', r.id)} pts)`).join(' · ')}</div></div>${edit ? `<button class="btn sm" data-act="gm-apply" data-key="${esc(g.key)}" data-which="league">Fill in “${stages(g.lg)}” points</button>` : ''}</div>`);
+  if (st.place && g.fn.length) out.push(`<div class="ap"><div><b>Final result</b><div class="muted">${Object.entries(st.place).sort((a, b) => a[1] - b[1]).map(([id, p]) => `${placeName(p)} ${esc(team(id).name)} (${gamePts(g.fn[0], st, 'final', id)} pts)`).join(' · ')}</div></div>${edit ? `<button class="btn sm amber" data-act="gm-apply" data-key="${esc(g.key)}" data-which="final">Fill in “${stages(g.fn)}” points</button>` : ''}</div>`);
+  else if (st.pending) out.push(`<p class="muted" style="margin:10px 0 0">${esc(st.pending)}</p>`);
+  return out.length ? `<h3 style="margin:18px 0 0">Fill in the points</h3>${out.join('')}` : '';
+}
+function gameCard(g, edit) {
+  const st = gameState(g), dis = edit ? '' : 'disabled', [stxt, scls] = gameStatus(st);
+  const editing = edit && !!UI.fx[g.key]; const fx = editing ? st.lms.map((m, i) => fxEditRow(m, g.key, i, st.lms.length)).join('') + fxAddRow(g.key) : st.lms.map((m) => fxRow(m, g.key, dis)).join('');
+  return `<div class="card game" data-gk="${esc(g.key)}"><div class="gh"><div><h2>${esc(g.sport)}</h2><div class="muted">${esc(g.category)} · ${g.lg.concat(g.fn).map((e) => esc(e.stage)).join(' + ')}</div></div><span class="pill ${scls}">${esc(stxt)}</span></div>
+    ${st.lms.length || editing ? `<div class="gh" style="margin-top:14px;align-items:center"><h3 style="margin:0">League matches</h3>${edit ? `<button class="btn ${editing ? 'amber' : 'ghost'} sm" data-act="gm-edit" data-key="${esc(g.key)}">${editing ? 'Done' : 'Choose fixtures'}</button>` : ''}</div>${editing ? '<p class="muted" style="margin:6px 0 0">Choose who plays whom, put the matches in order with the arrows, and add a time if you like. Change it any time players are not available.</p>' : '<p class="muted" style="margin:6px 0 0">Each match is best of 3 sets. Enter the points of each set.</p>'}<div class="g-fx">${fx}</div>` : '<p class="muted">The league fixtures are not created yet.</p>'}
+    ${edit && (st.lms.length < st.need || !st.lms.length) ? `<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ${st.lms.length ? 'ghost sm' : 'amber'}" data-act="gm-create" data-key="${esc(g.key)}">${st.lms.length ? 'Add the missing fixtures automatically' : 'Create all league fixtures'}</button>${!st.lms.length ? `<button class="btn ghost" data-act="gm-edit" data-key="${esc(g.key)}">Choose fixtures myself</button>` : ''}</div>` : ''}
+    ${editing && st.lms.length ? `<div style="margin-top:10px"><button class="btn ghost sm" data-act="gm-clear" data-key="${esc(g.key)}">Remove all league fixtures</button></div>` : ''}
+    <div class="g-table">${htmlTable(g, st)}</div><div class="g-ko">${htmlKo(g, st, edit)}</div><div class="g-apply">${htmlApply(g, st, edit)}</div></div>`;
+}
+function renderGames() {
+  const el = $('tab-games'); const edit = canEdit(); const gs = gameGroups(); const N = T.teams.length; const S = T.scheme, W = T.leaguePts.win;
+  const anyMissing = gs.some((g) => (T.tourneys[g.key] ? T.tourneys[g.key].matches.filter((m) => m.stage === 'league').length : 0) < N * (N - 1) / 2);
+  el.innerHTML = `<div class="card"><h2>Team games</h2><p class="muted" style="margin:0">Throwball, Basketball, Volleyball and Football. Every team plays every other team in the league, and each match is best of 3 sets. A league match win earns ${W} points. The top 2 play the Final: the winner earns ${S[0]} extra points (Gold), the runner-up ${S[1]} (Silver). ${T.thirdRule === 'level' ? 'If the next two teams are level on league points they play for 3rd position' : 'The bottom two teams play for 3rd position'} (Bronze ${S[2]}); the losing team gets ${S[3]} for taking part. When a stage is finished, one tap fills the points into the matching event.</p>${edit && anyMissing && gs.length ? '<div style="margin-top:12px"><button class="btn amber" data-act="gm-create-all">Create all league fixtures</button></div>' : ''}${edit ? '' : '<p class="muted" style="margin:10px 0 0">View only. Enter the scorer PIN in Settings to enter results.</p>'}</div>${gs.length ? gs.map((g) => gameCard(g, edit)).join('') : '<div class="card muted">There are no team-game events in the schedule.</div>'}`;
+}
+function refreshGame(key, scope) {
+  const g = gameGroups().find((x) => x.key === key); const card = [...document.querySelectorAll('.game')].find((c) => c.dataset.gk === key); if (!g || !card) return;
+  const st = gameState(g), edit = canEdit();
+  if (scope === 'league') { card.querySelector('.g-table').innerHTML = htmlTable(g, st); card.querySelector('.g-ko').innerHTML = htmlKo(g, st, edit); }
+  card.querySelector('.g-apply').innerHTML = htmlApply(g, st, edit);
+  const pill = card.querySelector('.gh .pill'); const [t, c] = gameStatus(st); pill.textContent = t; pill.className = 'pill ' + c;
+}
+function applyGame(g, st, which) {
+  const evs = which === 'league' ? g.lg : g.fn; if (!evs.length) return;
+  const names = T.teams.map((t) => `${t.name} ${gamePts(evs[0], st, which, t.id)}`).join(', ');
+  const had = evs.some((e) => evState(e) !== 'todo');
+  if (!confirm('Fill in “' + evs.map((e) => e.stage).join(' + ') + '” with these points: ' + names + '.' + (had ? '\nThis replaces what is already entered there.' : '') + '\n\nContinue?')) return;
+  evs.forEach((ev) => { T.teams.forEach((t) => { const w = st.rows.find((r) => r.id === t.id); ev.wins[t.id] = hasLeague(ev) ? (w ? w.w : 0) : null; ev.place[t.id] = which === 'final' && st.place ? (st.place[t.id] || null) : null; ev.pts[t.id] = gamePts(ev, st, which, t.id); }); ev.done = true; });
+  save(); toast('Points filled in');
+}
+function gameAct(act, a) {
+  const key = a.dataset.key; const g = key ? gameGroups().find((x) => x.key === key) : null; const st = g ? gameState(g) : null;
+  if (act === 'gm-create-all') { gameGroups().forEach((x) => createFixtures(x.key)); save(); toast('League fixtures created'); }
+  else if (act === 'gm-create') { createFixtures(key); save(); toast('League fixtures created'); }
+  else if (act === 'gm-edit') { UI.fx[key] = !UI.fx[key]; render(); }
+  else if (act === 'gm-up' || act === 'gm-down') { const tr = tourney(key); const idx = tr.matches.map((m, i) => (m.stage === 'league' ? i : -1)).filter((i) => i >= 0); const pos = idx.findIndex((i) => tr.matches[i].id === a.dataset.m); const to = pos + (act === 'gm-up' ? -1 : 1); if (pos < 0 || to < 0 || to >= idx.length) return; const i1 = idx[pos], i2 = idx[to]; [tr.matches[i1], tr.matches[i2]] = [tr.matches[i2], tr.matches[i1]]; save(); }
+  else if (act === 'gm-del') { const tr = tourney(key); const m = tr.matches.find((x) => x.id === a.dataset.m); if (!m) return; if (m.sets.some((s) => s[0] != null || s[1] != null) && !confirm('This match already has a score. Remove it?')) return; tr.matches = tr.matches.filter((x) => x.id !== m.id); save(); }
+  else if (act === 'gm-clear') { if (!confirm('Remove ALL league matches for this game, including any scores? The Final and 3rd-position match are removed too.')) return; const tr = tourney(key); tr.matches = []; tr.finalists = null; save(); }
+  else if (act === 'gm-add') { const card = a.closest('.game'); const A = card.querySelector('[data-add="a"]').value, B = card.querySelector('[data-add="b"]').value, when = card.querySelector('[data-add="when"]').value.trim(); if (!A || !B) { toast('Choose both teams'); return; } if (A === B) { toast('A team cannot play itself'); return; } const tr = tourney(key); const dup = tr.matches.some((x) => x.stage === 'league' && [x.a, x.b].sort().join('|') === [A, B].sort().join('|')); if (dup && !confirm('These teams already play each other in this league. Add another match?')) return; tr.matches.push({ id: uid(), stage: 'league', a: A, b: B, sets: blankSets(), when, round: 0 }); save(); toast('Match added'); }
+  else if (act === 'gm-final' && st) { if (st.ambiguous) { toast('Choose the finalists first'); return; } tourney(key).matches.push({ id: uid(), stage: 'final', a: st.fin[0], b: st.fin[1], sets: blankSets(), when: '', round: 0 }); save(); toast('Final created'); }
+  else if (act === 'gm-third' && st && st.thirdNeeded) { tourney(key).matches.push({ id: uid(), stage: 'third', a: st.rest[0].id, b: st.rest[1].id, sets: blankSets(), when: '', round: 0 }); save(); toast('3rd-position match created'); }
+  else if (act === 'gm-reset-ko' && st) { if (!confirm('Remove the Final and the 3rd-position match (and their scores)?')) return; const tr = tourney(key); tr.matches = tr.matches.filter((m) => m.stage === 'league'); tr.finalists = null; save(); }
+  else if (act === 'gm-apply' && st) { if (a.dataset.which === 'league' && st.leagueDone) applyGame(g, st, 'league'); else if (a.dataset.which === 'final' && st.place) applyGame(g, st, 'final'); }
+}
+document.addEventListener('change', (e) => {
+  const inp = e.target.closest && e.target.closest('.fx [data-s]');
+  if (inp) {
+    const row = inp.closest('.fx'), key = row.dataset.k; const tr = T.tourneys[key]; const m = tr && tr.matches.find((x) => x.id === row.dataset.m); if (!m || !canEdit()) return;
+    const i = +inp.dataset.s[0], k = inp.dataset.s[1] === 'a' ? 0 : 1; const v = inp.value.trim(); m.sets[i][k] = v === '' || isNaN(+v) ? null : Math.max(0, Math.round(+v));
+    const r = matchSets(m); row.querySelector('.res').textContent = r.a + r.b ? r.a + '–' + r.b : 'v'; row.querySelector('.fm-r').innerHTML = fxResult(m); row.querySelectorAll('.st')[2].hidden = !needSet3(m);   // update the row in place so typing is not interrupted
+    persist(); refreshGame(key, m.stage === 'league' ? 'league' : 'ko'); return;
+  }
+  const fe = e.target.closest && e.target.closest('.fe [data-e]');
+  if (fe) {
+    const row = fe.closest('.fe'), key = row.dataset.k, tr = T.tourneys[key]; const m = tr && tr.matches.find((x) => x.id === row.dataset.m); if (!m || !canEdit()) return; const f = fe.dataset.e;
+    if (f === 'when') { m.when = fe.value.trim(); persist(); return; }
+    const na = f === 'a' ? fe.value : m.a, nb = f === 'b' ? fe.value : m.b;
+    if (na === nb) { toast('A team cannot play itself'); fe.value = m[f]; return; }
+    if (m.sets.some((s) => s[0] != null || s[1] != null)) { if (!confirm('This match already has a score. Changing the teams clears the score. Continue?')) { fe.value = m[f]; return; } m.sets = blankSets(); }
+    const dup = tr.matches.some((x) => x !== m && x.stage === 'league' && [x.a, x.b].sort().join('|') === [na, nb].sort().join('|')); if (dup && !confirm('These teams already play each other in this league. Use this pairing anyway?')) { fe.value = m[f]; return; }
+    m.a = na; m.b = nb; save(); return;
+  }
+  const fs = e.target.closest && e.target.closest('[data-fin]');
+  if (fs) { const card = fs.closest('.game'), key = card.dataset.gk; const a = card.querySelector('[data-fin="0"]').value, b = card.querySelector('[data-fin="1"]').value; tourney(key).finalists = a && b && a !== b ? [a, b] : null; persist(); refreshGame(key, 'league'); const f0 = card.querySelector('[data-fin="0"]'), f1 = card.querySelector('[data-fin="1"]'); if (f0 && f1) { f0.value = a; f1.value = b; } }
+});
+
+/* ================= settings ================= */
+function renderSettings() {
+  const el = $('tab-settings'); const pin = scorerPin(); const N = T.teams.length;
+  el.innerHTML = `<div class="card"><h2>Scorer access</h2><p class="muted">Everyone can view the points. Only a phone with the scorer PIN can change them. If you already saved the PIN in the cricket scorer on this phone, it works here too.</p>
+    <div class="row"><div><label for="pin">Scorer PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="${pin ? 'PIN saved on this phone' : 'Enter the PIN'}"></div><div class="auto"><button class="btn" data-act="save-pin">Save PIN</button></div>${pin ? '<div class="auto"><button class="btn ghost" data-act="clear-pin">Forget PIN</button></div>' : ''}</div></div>
+  <div class="card"><h2>Cloud sync</h2><p class="muted" style="margin:0 0 6px">${esc($('sync') ? $('sync').textContent : '')}</p>
+    <div class="muted">This phone's data: <b>${T.updated ? new Date(T.updated).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'nothing saved yet'}</b><br>Cloud copy: <b>${FB.remoteUpdated ? new Date(FB.remoteUpdated).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'none found'}</b></div>
+    <div class="acts"><button class="btn ghost" data-act="pull">Reload from cloud</button>${canEdit() ? '<button class="btn ghost" data-act="send">Send this phone to cloud</button>' : ''}</div>
+    <p class="muted" style="margin:8px 0 0">Normally nothing to do: every change is saved to the cloud and other phones update by themselves. Use these two buttons only if a phone shows different data.</p></div>
+  <div class="card"><h2>Cricket link</h2><p class="muted">The cricket scorer publishes the points of each league. While this is on, the cricket events (Men's, Women's and Junior; Leagues and Finals) fill in by themselves: league wins first, then the Final and 3rd-place points.</p>
+    <label class="chk"><input type="checkbox" id="c-auto" ${T.cricketAuto !== false ? 'checked' : ''} ${canEdit() ? '' : 'disabled'}> Update the cricket events automatically</label>
+    <p class="muted" style="margin:8px 0 0">${CR ? 'Last update from the cricket scorer: <b>' + new Date(CR.updated).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + '</b>.' : 'Nothing received from the cricket scorer yet. It arrives after a scorer saves a cricket match.'}</p>
+    ${CR && CR.leagues ? `<label>Which overall team is each cricket team?</label>${Object.entries(CR.leagues).flatMap(([lg, L]) => L.teams.map((c) => ({ lg, label: L.label, name: c.name }))).map((c) => { const cur = cricketTeamId(c.lg, c.name); return `<div class="row" style="margin-top:6px"><div style="flex:1 1 150px"><b>${esc(c.label)}</b> · ${esc(c.name)}</div><div style="flex:1 1 150px"><select data-cmap="${esc(c.lg + '|' + c.name)}" ${canEdit() ? '' : 'disabled'}><option value="none" ${cur ? '' : 'selected'}>Not linked</option>${T.teams.map((t) => `<option value="${t.id}" ${t.id === cur ? 'selected' : ''}>${esc(t.name)}</option>`).join('')}</select></div></div>`; }).join('')}` : ''}
+    ${canEdit() ? '<div class="acts"><button class="btn ghost" data-act="c-now">Update now</button></div>' : ''}</div>
+  <div class="card"><h2>Teams</h2><p class="muted">Rename the teams and pick two colours for each: the main colour and an accent. Between 2 and 8 teams. Dhurandhars (black and red), Spartans (white and blue), Vipers (cream and orange) and Mavericks (yellow and red) get their jersey colours automatically.</p>
+    ${T.teams.map((t, i) => `<div class="row" style="margin-top:8px"><div style="flex:2 1 160px"><input data-tname="${t.id}" value="${esc(t.name)}" aria-label="Team ${i + 1} name" ${canEdit() ? '' : 'disabled'}></div><div class="auto"><input type="color" data-tcolor="${t.id}" value="${t.color}" title="Main colour" aria-label="Team ${i + 1} main colour" ${canEdit() ? '' : 'disabled'}></div><div class="auto"><input type="color" data-tcolor2="${t.id}" value="${t.color2}" title="Accent colour" aria-label="Team ${i + 1} accent colour" ${canEdit() ? '' : 'disabled'}></div>${canEdit() && N > 2 ? `<div class="auto"><button class="btn ghost sm" data-act="del-team" data-id="${t.id}">Remove</button></div>` : ''}</div>`).join('')}
+    ${canEdit() && N < 8 ? '<div style="margin-top:12px"><button class="btn ghost sm" data-act="add-team">Add a team</button></div>' : ''}</div>
+  <div class="card"><h2>Points</h2><p class="muted">What a team earns. Change these if the rules change. Choosing a placing in an event fills in these points, and you can still type any number. An event can also have its own points.</p>
+    <div class="cs" style="grid-template-columns:repeat(2,1fr)"><label>League match won<input type="number" step="any" data-lw value="${T.leaguePts.win}" ${canEdit() ? '' : 'disabled'}></label></div>
+    <div class="cs" style="grid-template-columns:repeat(${Math.min(N, 4)},1fr);margin-top:6px">${T.teams.map((_, i) => `<label>${['Gold (1st)', 'Silver (2nd)', 'Bronze (3rd)', '4th place'][i] || ORD[i]}<input type="number" step="any" data-scheme="${i}" value="${T.scheme[i]}" ${canEdit() ? '' : 'disabled'}></label>`).join('')}</div>
+    <p class="muted" style="margin:8px 0 0">4th place and below earn their points for taking part.</p>
+    <label>3rd-place match (team games)</label><select id="third-rule" ${canEdit() ? '' : 'disabled'}><option value="always" ${T.thirdRule === 'level' ? '' : 'selected'}>Always: the bottom two teams play for 3rd place</option><option value="level" ${T.thirdRule === 'level' ? 'selected' : ''}>Only when the bottom two are level on league points</option></select>
+    ${canEdit() ? '<div style="margin-top:12px"><button class="btn" data-act="save-scheme">Save points</button></div>' : ''}</div>
+  <div class="card"><h2>Tournament name</h2><div class="row"><div><input id="tname" value="${esc(T.name)}" ${canEdit() ? '' : 'disabled'}></div>${canEdit() ? '<div class="auto"><button class="btn" data-act="save-name">Save</button></div>' : ''}</div></div>
+  <div class="card"><h2>Export and backup</h2><div class="acts" style="margin-top:6px"><button class="btn ghost" data-act="csv">Download table (CSV)</button><button class="btn ghost" data-act="backup">Download backup</button>${canEdit() ? '<button class="btn ghost" data-act="restore">Restore from backup</button>' : ''}</div><input type="file" id="restore-file" accept=".json,application/json" hidden></div>
+  ${canEdit() ? `<div class="card"><h2>Start over</h2><p class="muted">Both options ask you to type RESET and download a backup first.</p><div class="acts"><button class="btn red" data-act="reset-scores">Clear all scores</button><button class="btn red" data-act="reset-all">Restore the original schedule</button></div></div>` : ''}
+  <div class="card"><h2>How it works</h2><p class="muted" style="margin:0">The events come from the Valour 26 schedule. Each event has points per team, entered from the Events tab. The Leaderboard adds them up, ranks the teams and, once the last event is done, a scorer declares the winner and runner-up. Rummy and Athletics are participation events: they give medals only, with no team points. Friendly matches give neither points nor medals. A league match won, and Gold, Silver, Bronze and 4th place, each earn the points set in Settings. Ties on points are broken by most gold, then silver, then bronze medals. If teams are still level, the organisers choose.</p></div>`;
+  el.querySelectorAll('[data-cmap]').forEach((i) => i.addEventListener('change', () => { T.cricketMap[i.dataset.cmap] = i.value; applyCricket(); save(); }));
+  const ca = $('c-auto'); if (ca) ca.addEventListener('change', () => { T.cricketAuto = ca.checked; if (ca.checked) applyCricket(); save(); toast(ca.checked ? 'Cricket events update automatically' : 'Automatic update switched off'); });
+  el.querySelectorAll('[data-tname]').forEach((i) => i.addEventListener('change', () => { const tm = team(i.dataset.tname); tm.name = i.value.trim() || 'Team'; const kn = teamColorFor(tm.name); if (kn) { if (isDefaultColor(tm.color)) tm.color = kn.c; if (isDefaultColor2(tm.color2)) tm.color2 = kn.c2; } save(); }));
+  el.querySelectorAll('[data-tcolor]').forEach((i) => i.addEventListener('change', () => { team(i.dataset.tcolor).color = i.value; save(); }));
+  el.querySelectorAll('[data-tcolor2]').forEach((i) => i.addEventListener('change', () => { team(i.dataset.tcolor2).color2 = i.value; save(); }));
+  const rf = $('restore-file'); if (rf) rf.addEventListener('change', () => { const f = rf.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { const d = norm(JSON.parse(r.result)); if (!d.events.length || !d.teams.length) throw new Error('empty'); if (!confirm('Replace everything with this backup (' + d.events.length + ' events, ' + d.teams.length + ' teams)?')) return; T = d; save(); toast('Backup restored'); } catch (_) { toast('That file is not a valid backup'); } }; r.readAsText(f); });
+}
+function csvText() {
+  const { rows } = calc(); const tot = Object.fromEntries(rows.map((r) => [r.id, r.pts]));
+  const out = [['#', 'Stage', 'Category', 'Sport', 'Type', 'Counts', 'Status'].concat(T.teams.map((t) => t.name), MEDAL_NAMES)];
+  T.events.forEach((e, i) => out.push([i + 1, e.stage, e.category, e.sport, e.kind === 'medals' ? 'Medals only' : e.kind === 'friendly' ? 'Friendly' : 'Team points', noPts(e) ? 'No' : e.counts ? 'Yes' : 'No', STATE_LABEL[evState(e)]].concat(T.teams.map((t) => (noPts(e) || evPts(e, t.id) == null ? '' : evPts(e, t.id))), e.medals.map((m) => (m.name ? m.name + (m.team ? ' (' + team(m.team).name + ')' : '') : '')))));
+  out.push(['', '', '', 'Total', '', '', ''].concat(T.teams.map((t) => tot[t.id]), ['', '', '']));
+  return '\ufeff' + out.map((r) => r.map((v) => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+}
+function typedReset(msg, fn) {
+  if (!confirm(msg + '\n\nA backup file is downloaded first. Continue?')) return;
+  const w = prompt('Type RESET to confirm.'); if (w === null || w.trim().toUpperCase() !== 'RESET') { toast('Nothing was changed'); return; }
+  download('valour2026_points_backup.json', JSON.stringify(T, null, 2), 'application/json'); fn(); save(); toast('Done');
+}
+
+/* ================= clicks ================= */
+document.addEventListener('click', (e) => {
+  const evb = e.target.closest('[data-ev]'); if (evb && evb.classList.contains('ev')) { openEditor(evb.dataset.ev); return; }
+  const a = e.target.closest('[data-act]'); if (!a) return; const act = a.dataset.act;
+  if (act === 'close') closeModal();
+  else if (act === 'pull') pullNow();
+  else if (act === 'send') sendNow();
+  else if (act === 'new-event') openEditor(null);
+  else if (act === 'declare') declareDialog();
+  else if (act === 'undeclare') { if (confirm('Remove the declared result?')) { T.final = null; save(); } }
+  else if (act === 'del-event') { const id = $('sheet').dataset.ev; const ev = T.events.find((x) => x.id === id); if (ev && confirm('Delete ' + ev.sport + ' · ' + ev.category + ' · ' + ev.stage + '?')) { T.events = T.events.filter((x) => x.id !== id); closeModal(); save(); toast('Event deleted'); } }
+  else if (act === 'save-pin') { const v = $('pin').value.trim(); if (!v) { toast('Enter the PIN first'); return; } localStorage.setItem(KEY + '.pin', v); toast('PIN saved — reloading'); setTimeout(() => location.reload(), 700); }
+  else if (act === 'clear-pin') { localStorage.removeItem(KEY + '.pin'); toast('PIN removed from this app'); setTimeout(() => location.reload(), 700); }
+  else if (act === 'add-team') { if (T.teams.length >= 8) return; const n = T.teams.length + 1; T.teams.push({ id: 't' + uid(), name: 'Team ' + n, color: COLORS[(n - 1) % COLORS.length], color2: '#13201B' }); save(); }
+  else if (act === 'del-team') { const id = a.dataset.id; if (!confirm('Remove ' + team(id).name + ' and its points?')) return; T.teams = T.teams.filter((t) => t.id !== id); T.events.forEach((ev) => { delete ev.pts[id]; delete ev.place[id]; }); Object.values(T.tourneys).forEach((tr) => { tr.matches = tr.matches.filter((m) => m.a !== id && m.b !== id); if (tr.finalists && tr.finalists.includes(id)) tr.finalists = null; }); if (T.final && (T.final.winner === id || T.final.runner === id)) T.final = null; save(); }
+  else if (act === 'save-scheme') { document.querySelectorAll('[data-scheme]').forEach((i) => { T.scheme[+i.dataset.scheme] = num(i.value) || 0; }); const lw = document.querySelector('[data-lw]'); if (lw && num(lw.value) != null) T.leaguePts.win = num(lw.value); const tr = $('third-rule'); if (tr) T.thirdRule = tr.value === 'level' ? 'level' : 'always'; save(); toast('Points saved'); }
+  else if (act.startsWith('gm-')) gameAct(act, a);
+  else if (act === 'c-now') { if (!CR) { toast('Nothing received from the cricket scorer yet'); return; } const ch = applyCricket(); if (ch) save(); toast(ch ? 'Cricket points updated' : 'Already up to date'); }
+  else if (act === 'save-name') { T.name = $('tname').value.trim() || 'Valour 2026'; save(); toast('Saved'); }
+  else if (act === 'csv') download('valour2026_points.csv', csvText(), 'text/csv');
+  else if (act === 'backup') download('valour2026_points_backup.json', JSON.stringify(T, null, 2), 'application/json');
+  else if (act === 'restore') $('restore-file').click();
+  else if (act === 'reset-scores') typedReset('This clears every placing and point, the declared result, and the scored flags. Events and teams stay.', () => { T.events.forEach((ev) => { ev.pts = {}; ev.place = {}; ev.done = false; }); T.final = null; });
+  else if (act === 'reset-all') typedReset('This replaces all events with the original Valour 26 schedule and clears all points.', () => { T.events = norm(defaults()).events; T.final = null; });
+});
+
+render();
+cloudInit();
+</script>
+</body>
+</html>
